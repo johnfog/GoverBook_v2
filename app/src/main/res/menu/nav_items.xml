@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+
+        <item
+            android:title="@string/workers_title"
+            android:id="@+id/nav_workers"
+            android:orderInCategory="1"
+            android:icon="@mipmap/ic_sakha_circle"/>
+        <item
+            android:title="@string/orgs_title"
+            android:id="@+id/nav_orgs"
+            android:orderInCategory="2"
+            android:icon="@mipmap/ic_sakha_circle"/>
+        <item
+            android:title="@string/fave_title"
+            android:id="@+id/nav_fave"
+            android:orderInCategory="3"
+            android:icon="@mipmap/ic_menu_w"/>
+        <item
+            android:title="@string/search_title"
+            android:id="@+id/nav_search"
+            android:orderInCategory="4"
+            android:icon="@mipmap/ic_search_wh"/>
+        <item
+            android:title="@string/settings_title"
+            android:id="@+id/nav_settings"
+            android:orderInCategory="5"
+            android:icon="@mipmap/ic_menu_w"/>
+
+    </group>
+
+</menu>

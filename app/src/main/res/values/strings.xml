@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">GoverBook</string>
+    <string name="search_title">Поиск</string>
+    <string name="fave_title">Избранное</string>
+    <string name="workers_title">Сотрудники</string>
+    <string name="orgs_title">Организации</string>
+    <string name="settings_title">Настройки</string>
+
+</resources>
