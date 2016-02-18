@@ -72,12 +72,15 @@ public class MainActivity extends AppCompatActivity {
 
         tab1Actions();
 
-
-
-
-
-
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
+
+
+
+
+
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -96,10 +99,9 @@ public class MainActivity extends AppCompatActivity {
         searchResultFio.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                intent = new Intent(MainActivity.this, ContactDetailActivity.class);
-//                intent.putExtra("userid", userContact.get(position).getId());
-//                startActivity(intent);
-                Log.d("MyLog",""+userContact.get(position).getId());
+                intent = new Intent(MainActivity.this, ContactDetailActivity.class);
+                intent.putExtra("userid", userContact.get(position).getId());
+                startActivity(intent);
             }
         });
 
@@ -113,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<Integer> orgId = new ArrayList<Integer>();
 
 
-//         try {
+        try {
         list = dbHelper.ListOrg(database);
 
         for (int i = 0; i < (list[0].length); i++) {
@@ -134,7 +136,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         adapterForTypes = new ExpListAdapter(getApplicationContext(), groups,orgTypes,true);
-        Log.d("MyLog",""+orgTypes.size());
         searchResultOrg = (ExpandableListView) findViewById(R.id.searchOrgResult);
         searchResultOrg.setAdapter(adapterForTypes);
         searchResultOrg.setGroupIndicator(getResources().getDrawable(R.drawable.userliststate));
@@ -149,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
                 return actionId == EditorInfo.IME_ACTION_DONE;
             }
         });
-//         } catch (Exception e) {}
+         } catch (Exception e) {}
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
 
@@ -160,6 +161,12 @@ public class MainActivity extends AppCompatActivity {
     public static void hideSoftKeyboard(Activity activity) {
         InputMethodManager inputMethodManager = (InputMethodManager)  activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+    }
+
+
+    public void onClickSettings(View view) {
+        intent = new Intent(this, SettingsActivity.class);
+        startActivityForResult(intent, 1);
     }
 
     private void tab1Actions() {
@@ -222,10 +229,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
                 String clickedOrgName = adapterForTypes.getChildById(groupPosition, childPosition);
-//                intent = new Intent(MainActivity.this, OrgResultActivity.class);
-//                intent.putExtra("orgName", clickedOrgName);
-//                startActivity(intent);
-                Log.d("MyLog",clickedOrgName);
+                intent = new Intent(MainActivity.this, OrgResultsActivity.class);
+                intent.putExtra("orgName", clickedOrgName);
+                startActivity(intent);
                 return false;
             }
         });
