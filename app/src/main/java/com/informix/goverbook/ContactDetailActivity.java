@@ -5,42 +5,42 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 public class  ContactDetailActivity extends AppCompatActivity implements View.OnClickListener{
+    private static final int LAYOUT = R.style.AppDefault;
+    private Toolbar toolbar;
     UserContact userContact;
     TextView tvPhone;
     TextView tvEmail;
     Intent intent;
 
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState){
+        setTheme(LAYOUT);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_detail);
-        TextView tvFio = (TextView) findViewById(R.id.tvFio);
         tvPhone = (TextView) findViewById(R.id.tvPhone);
         TextView tvStatus = (TextView) findViewById(R.id.tvStatus);
         tvEmail = (TextView) findViewById(R.id.tvEmail);
         TextView tvIpPhone = (TextView) findViewById(R.id.tvIpPhone);
         Button btnDial = (Button) findViewById(R.id.btnDial);
         Button btnEmail = (Button) findViewById(R.id.btnEmail);
-
-
-
         DBHelper dbHelper =new DBHelper(this);
         intent=getIntent();
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         userContact =dbHelper.searchUserById(intent.getIntExtra("userid", 0), database);
-        tvFio.setText(userContact.FIO);
         tvIpPhone.setText(userContact.CONTACTS);
         tvStatus.setText(userContact.getSTATUS());
         tvEmail.setText(userContact.getEMAIL());
         tvPhone.setText(userContact.getPHONE());
+        initToolbar(userContact.FIO);
+
 
         if (tvPhone.getText().length()>0) {
             btnDial.setOnClickListener(this);
@@ -59,8 +59,22 @@ public class  ContactDetailActivity extends AppCompatActivity implements View.On
     }
 
     private String parseNumber(String text) {
-        String num=text.replaceAll("-","");
+        String num=text.replaceAll("-", "");
         return num;
+    }
+
+
+    private void initToolbar(String orgName) {
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(orgName);
+
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                return false;
+            }
+        });
+        toolbar.inflateMenu(R.menu.toolbar_menu);
     }
 
     @Override
