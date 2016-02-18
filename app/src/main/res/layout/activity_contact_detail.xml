@@ -18,10 +18,6 @@
             <include android:id="@+id/toolbar"
                 layout="@layout/toolbar"/>
 
-            <include android:id="@+id/searchline"
-                layout="@layout/searchline"/>
-
-
     </android.support.design.widget.AppBarLayout>
 
     <include android:id="@+id/contact_detail"
