@@ -7,7 +7,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Large Text"
-        android:id="@+id/Избранные"
+        android:text="Избранные"
+        android:id="@+id/tvFave"
         android:layout_gravity="center_horizontal" />
 </LinearLayout>
