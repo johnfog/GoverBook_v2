@@ -42,16 +42,13 @@ public class MainActivity extends AppCompatActivity {
     DBHelper dbHelper;
     SQLiteDatabase database;
     ArrayList<UserContact> userContact;
-    ArrayList<String> orgNames;
-    ArrayList<String> orgTypes = new ArrayList<String>();
-    ArrayList<Integer> orgTypesId = new ArrayList<Integer>();
     ListView searchResultFio;
     ExpandableListView searchResultOrg;
-    String[][] list;
     ArrayList<ArrayList<String>> groups = new ArrayList<ArrayList<String>>();
     ExpListAdapter adapterForTypes;
     ExpListAdapter adapterForOrgs;
     SharedPreferences spref;
+    ArrayList<Integer> orgId = new ArrayList();
     private static final String REAL_AREA = "REAL_AREA";
     public static final String YOUR_AREA_POSITION = "YOUR_AREA_POSITION";
     private static final String YOUR_AREA_ID = "YOUR_AREA_ID";
@@ -74,13 +71,6 @@ public class MainActivity extends AppCompatActivity {
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
-
-
-
-
-
-
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -110,19 +100,18 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void ListOrg(SQLiteDatabase database) {
-
+        String[][] list;
+        ArrayList<String> orgTypes = new ArrayList<String>();
+        ArrayList<Integer> orgTypesId = new ArrayList<Integer>();
         String[][] orgListByType;
-        ArrayList<Integer> orgId = new ArrayList<Integer>();
-
+        ArrayList<String> orgNames;
 
         try {
         list = dbHelper.ListOrg(database);
-
         for (int i = 0; i < (list[0].length); i++) {
             orgTypes.add(list[0][i]);
             orgTypesId.add(Integer.parseInt(list[1][i]));
         }
-
 
         for (int i=0;i< (orgTypesId.size());i++) {
             orgListByType = dbHelper.ListOrgOnId(String.valueOf(orgTypesId.get(i)),database);
@@ -195,7 +184,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void tab2Actions() {
         groups.clear();
-        orgTypes.clear();
         ListOrg(database);
         etSearch.setText("");
 
@@ -240,6 +228,10 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void startSearchOrg() {
+        String[][] list;
+        ArrayList<String> orgTypes = new ArrayList<String>();
+        ArrayList<Integer> orgTypesId = new ArrayList<Integer>();
+
         ExpandableListView listView = (ExpandableListView) findViewById(R.id.searchOrgResult);
         list = dbHelper.SearchOrg(etSearch.getText().toString(),database);
 
@@ -252,14 +244,13 @@ public class MainActivity extends AppCompatActivity {
         adapterForOrgs = new ExpListAdapter(getApplicationContext(),orgTypes,false);
         listView.setAdapter(adapterForOrgs);
 
-        searchResultOrg.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+        listView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-                String clickedOrgName = adapterForTypes.getGroup(groupPosition).toString();
-//                intent = new Intent(MainActivity.this, OrgResultActivity.class);
-//                intent.putExtra("orgName", clickedOrgName);
-//                startActivity(intent);
-                Log.d("MyLog",clickedOrgName);
+                String clickedOrgName = adapterForOrgs.getGroup(groupPosition).toString();
+                intent = new Intent(MainActivity.this, OrgResultsActivity.class);
+                intent.putExtra("orgName", clickedOrgName);
+                startActivity(intent);
                 return false;
             }
         });
