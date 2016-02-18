@@ -32,6 +32,7 @@ public class OrgResultsActivity extends AppCompatActivity {
         initToolbar(clickedOrgName);
         org=dbHelper.searchOrgByName(clickedOrgName, database);
         org.DrawOrgContact(searchResult, getApplicationContext());
+        searchResult.setGroupIndicator(getResources().getDrawable(R.drawable.userliststate));
 
         searchResult.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
