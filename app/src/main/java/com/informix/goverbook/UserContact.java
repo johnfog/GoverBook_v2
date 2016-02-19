@@ -4,10 +4,9 @@ package com.informix.goverbook;
  * Created by adm on 01.02.2016.
  */
 public class UserContact {
-    String querry;
     int id;
     String FIO;
-    String STATUS;
+    public String STATUS;
     String PHONE;
     String CONTACTS;
     String EMAIL;
@@ -18,8 +17,20 @@ public class UserContact {
     int SORTING;
     String ORGADRESS;
 
-
-
+    public UserContact(int id, String FIO, String status) {
+        this.id = id;
+        this.FIO = FIO;
+        this.STATUS = status;
+        this.PHONE = "";
+        this.CONTACTS = "";
+        this.EMAIL = "";
+        this.DEPARTID = 0;
+        this.ORG ="";
+        this.ORGIDID = 0;
+        this.SORTING = 0;
+        this.DEPART = "";
+        this.ORGADRESS = "";
+    }
 
     public UserContact(int id, String FIO, String STATUS, String PHONE, String CONTACTS, String EMAIL, int DEPARTID, String ORG, int ORGIDID, int SORTING) {
         this.id = id;
@@ -67,10 +78,6 @@ public class UserContact {
         return ORG;
     }
 
-    public String getQuerry() {
-        return querry;
-    }
-
     public int getId() {
         return id;
     }
@@ -105,11 +112,6 @@ public class UserContact {
 
     public int getSORTING() {
         return SORTING;
-    }
-
-    public void setQuerry(String querry) {
-
-        this.querry = querry;
     }
 
     public void setId(int id) {

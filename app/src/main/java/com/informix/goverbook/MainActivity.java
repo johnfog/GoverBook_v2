@@ -2,17 +2,18 @@ package com.informix.goverbook;
 
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,6 +24,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.informix.goverbook.adapters.ExpListAdapter;
@@ -30,6 +32,9 @@ import com.informix.goverbook.adapters.TabsAdapter;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,21 +42,26 @@ public class MainActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
     private ViewPager viewPager;
+
+
     private EditText etSearch;
     Intent intent;
     DBHelper dbHelper;
     SQLiteDatabase database;
     ArrayList<UserContact> userContact;
-    ListView searchResultFio;
     ExpandableListView searchResultOrg;
     ArrayList<ArrayList<String>> groups = new ArrayList<ArrayList<String>>();
     ExpListAdapter adapterForTypes;
     ExpListAdapter adapterForOrgs;
+    ListView searchFioResult;
     SharedPreferences spref;
     ArrayList<Integer> orgId = new ArrayList();
+
+
     private static final String REAL_AREA = "REAL_AREA";
     public static final String YOUR_AREA_POSITION = "YOUR_AREA_POSITION";
     private static final String YOUR_AREA_ID = "YOUR_AREA_ID";
+
 
 
     public void onCreate(Bundle savedInstanceState) {
@@ -66,9 +76,10 @@ public class MainActivity extends AppCompatActivity {
         dbHelper = new DBHelper(this);
         database = dbHelper.getReadableDatabase();
         etSearch = (EditText) findViewById(R.id.searchString);
+        viewPager = (ViewPager) findViewById(R.id.viewPager);
 
         tab1Actions();
-
+        viewPager.setCurrentItem(0);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
 
@@ -85,9 +96,43 @@ public class MainActivity extends AppCompatActivity {
     public void startSearchFio(){
         userContact = dbHelper.searchByFio(etSearch.getText().toString(), database);
         ItemMenuUsers itemMenuUsers = new ItemMenuUsers(userContact);
-        searchResultFio = (ListView) findViewById(R.id.searchFioResult);
-        itemMenuUsers.DrawMenu(searchResultFio);
-        searchResultFio.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        searchFioResult = (ListView) findViewById(R.id.searchFioResult);
+        itemMenuUsers.DrawMenu(searchFioResult);
+        searchFioResult.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                dbHelper.saveLast(userContact.get(position).FIO,userContact.get(position).STATUS,userContact.get(position).id,dbHelper);
+                intent = new Intent(MainActivity.this, ContactDetailActivity.class);
+                intent.putExtra("userid", userContact.get(position).getId());
+                startActivity(intent);
+            }
+        });
+
+    }
+
+
+    public void listLastWorkers(){
+        List<Map<String, String>> data = new ArrayList<Map<String, String>>();
+        userContact = dbHelper.ListLast(database);
+
+        for (int i=0;i<userContact.size();i++) {
+            Map<String, String> datum = new HashMap<String, String>(2);
+            datum.put("fio", userContact.get(i).FIO);
+            datum.put("status", userContact.get(i).STATUS);
+            data.add(datum);
+        }
+
+
+
+        SimpleAdapter adapter1 = new SimpleAdapter(getBaseContext(), data, android.R.layout.simple_list_item_2,
+                new String[] {"fio", "status"},
+                new int[] {android.R.id.text1,
+                        android.R.id.text2});
+
+        searchFioResult = (ListView) findViewById(R.id.searchFioResult);
+        searchFioResult.setAdapter(adapter1);
+
+        searchFioResult.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 intent = new Intent(MainActivity.this, ContactDetailActivity.class);
@@ -152,6 +197,7 @@ public class MainActivity extends AppCompatActivity {
         InputMethodManager inputMethodManager = (InputMethodManager)  activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
     }
+
 
 
     private void tab1Actions() {
@@ -303,6 +349,7 @@ public class MainActivity extends AppCompatActivity {
                         viewPager.setCurrentItem(0);
                         tab1Actions();
                         toolbar.setTitle("Сотрудники");
+                        listLastWorkers();
                         break;
                     case 1:
                         viewPager.setCurrentItem(1);

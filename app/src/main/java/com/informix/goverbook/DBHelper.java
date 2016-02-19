@@ -1,10 +1,12 @@
 package com.informix.goverbook;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -17,13 +19,15 @@ import java.util.ArrayList;
  */
 public class DBHelper extends SQLiteOpenHelper {
     // Объявляем Таблицы базы
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     public static final String DATABASE_NAME = "contactDb";
     public static final String TABLE_AREAS = "s_areas";
     public static final String TABLE_DEPART = "s_depart";
     public static final String TABLE_ORG = "s_org";
     public static final String TABLE_OTYPE = "s_otype";
     public static final String TABLE_USERS = "s_users";
+    public static final String TABLE_FAVE = "s_fave";
+    public static final String TABLE_LAST = "s_last";
 
     // Объявляем Ключи таблицы s_users
     public static final String KEY_ID = "ID";
@@ -53,6 +57,15 @@ public class DBHelper extends SQLiteOpenHelper {
     // Объявляем Ключи таблицы s_otype
     public static final String KEY_TITLE = "TITLE";
 
+    // Объявляем Ключи таблицы s_fave
+    public static final String KEY_IDUSER = "IDUSER";
+
+    // Объявляем Ключи таблицы s_last
+    // public static final String KEY_IDUSER = "IDUSER";
+
+
+
+
 
     //Обьявляем переменные для списка улусов
     ArrayList<String> areaName = new ArrayList<String>();
@@ -77,17 +90,23 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("create table " + TABLE_AREAS + "(" + KEY_ID + " integer primary key," + KEY_SNAME + " text," + KEY_SORTING + " integer)");
         db.execSQL("create table " + TABLE_DEPART + "(" + KEY_ID + " integer primary key," + KEY_DEPARTMENT + " text,"+ KEY_ORGID + " integer," + KEY_SORTING + " integer)");
         db.execSQL("create table " + TABLE_OTYPE + "(" + KEY_ID + " integer primary key," + KEY_TITLE + " text)");
+        db.execSQL("create table " + TABLE_LAST + "(" + KEY_ID + " integer primary key," + KEY_IDUSER + " integer," + KEY_FIO + " text," + KEY_STATUS + " text)");
 
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("drop table if exist " + TABLE_USERS);
-        db.execSQL("drop table if exist " + TABLE_ORG);
-        db.execSQL("drop table if exist " + TABLE_AREAS);
-        db.execSQL("drop table if exist " + TABLE_DEPART);
-        db.execSQL("drop table if exist " + TABLE_OTYPE);
-        onCreate(db);
+
+        if (oldVersion==1) {
+//            db.execSQL("drop table if exist " + TABLE_USERS);
+//            db.execSQL("drop table if exist " + TABLE_ORG);
+//            db.execSQL("drop table if exist " + TABLE_AREAS);
+//            db.execSQL("drop table if exist " + TABLE_DEPART);
+//            db.execSQL("drop table if exist " + TABLE_OTYPE);
+            db.execSQL("create table " + TABLE_LAST + "(" + KEY_ID + " integer primary key," + KEY_IDUSER + " integer," + KEY_FIO + " text," + KEY_STATUS + " text)");
+//            onCreate(db);
+        }
+
     }
 
 
@@ -145,8 +164,6 @@ public class DBHelper extends SQLiteOpenHelper {
         ArrayList<UserContact> result= new ArrayList<UserContact>();
         UserContact userContact;
         // Строка запроса в sql для ФИО
-
-
 
 
         querry = "SELECT s_users.id, s_users.fio, s_users.status, s_users.contacts, s_users.email, s_users.departid, s_users.orgid, s_depart.department, s_org.company, s_org.adres, s_org.descr, s_users.sorting, s_users.phone FROM s_users LEFT JOIN s_org ON s_users.orgid=s_org.id LEFT JOIN s_depart ON s_users.departid=s_depart.id WHERE "+ DBHelper.KEY_FIO +" like ?";
@@ -384,6 +401,58 @@ public class DBHelper extends SQLiteOpenHelper {
         return result;
 
     }
+
+    public void saveLast(String fio,String status,int iduser,DBHelper dbHelper){
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DBHelper.KEY_IDUSER, iduser);
+        contentValues.put(DBHelper.KEY_FIO, fio);
+        contentValues.put(DBHelper.KEY_STATUS, status);
+        database.insert(DBHelper.TABLE_LAST, null, contentValues);
+
+    }
+
+
+
+    public ArrayList<UserContact> ListLast(SQLiteDatabase database) {
+
+        String querry;
+        ArrayList<UserContact> result = new ArrayList<UserContact>();
+        // Строка запроса в sql для ФИО
+
+
+        querry = "SELECT * FROM " + DBHelper.TABLE_LAST+" order by id desc limit 6";
+
+
+        // Поиск всех вхождений базы данных удовлетворяющих условию в cursor
+
+        //Заменяем первый символ поискана на заглавную букву
+
+        Cursor cursor = database.rawQuery(querry, null);
+
+        int idIndex = cursor.getColumnIndex(DBHelper.KEY_IDUSER);
+        int FIOIndex = cursor.getColumnIndex(DBHelper.KEY_FIO);
+        int STATUSIndex = cursor.getColumnIndex(DBHelper.KEY_STATUS);
+        UserContact userContact;
+
+        //Вывод результатов
+        if (cursor.getCount() > 0) {
+            if (cursor.moveToFirst()) {
+                do {
+                    userContact = new UserContact(cursor.getInt(idIndex),cursor.getString(FIOIndex),cursor.getString(STATUSIndex));
+                    result.add(userContact);
+                } while (cursor.moveToNext());
+            }
+            cursor.close();
+        }
+
+        cursor.close();
+        return result;
+
+    }
+
+
+
 
     public String[][] ListOrgOnId(String typeId, SQLiteDatabase database) {
 
