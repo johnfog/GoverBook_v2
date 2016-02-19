@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -70,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -152,11 +154,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void onClickSettings(View view) {
-        intent = new Intent(this, SettingsActivity.class);
-        startActivityForResult(intent, 1);
-    }
-
     private void tab1Actions() {
         etSearch.setText("");
 
@@ -178,6 +175,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+
     }
 
 
@@ -301,10 +300,18 @@ public class MainActivity extends AppCompatActivity {
             public void onTabSelected(TabLayout.Tab tab) {
                 switch (tab.getPosition()) {
                     case 0:
+                        viewPager.setCurrentItem(0);
                         tab1Actions();
+                        toolbar.setTitle("Сотрудники");
                         break;
                     case 1:
+                        viewPager.setCurrentItem(1);
                         tab2Actions();
+                        toolbar.setTitle("Организации");
+                        break;
+                    case 2:
+                        viewPager.setCurrentItem(2);
+                        toolbar.setTitle("Избранное");
                         break;
 
                 }

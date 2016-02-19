@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TabsAdapter extends FragmentPagerAdapter {
+    private static int NUM_ITEMS = 3;
 
     private Map<Integer, AbstractTabFragment> tabs;
     private Context context;
