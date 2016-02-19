@@ -96,8 +96,14 @@ public class OrgResultsActivity extends AppCompatActivity {
 
 
         for (int i=0;i<groupCount;i++) {
-            searchResult.collapseGroup(i);
+            try {
+                searchResult.collapseGroup(i);
+            }
+            catch(Exception e) {
+
         }
+
+    }
 
         toolbar.getMenu().getItem(0).setIcon(R.mipmap.ic_chevron_double_down);
         expanded=false;
@@ -108,7 +114,10 @@ public class OrgResultsActivity extends AppCompatActivity {
         groupCount=searchResult.getCount();
 
         for (int i=0;i<groupCount;i++) {
-            searchResult.expandGroup(i);
+            try {
+                searchResult.expandGroup(i);
+            }
+            catch(Exception e) {}
         }
         toolbar.getMenu().getItem(0).setIcon(R.mipmap.ic_chevron_double_up);
         expanded=true;
