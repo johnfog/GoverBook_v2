@@ -19,7 +19,7 @@ import java.util.ArrayList;
  */
 public class DBHelper extends SQLiteOpenHelper {
     // Объявляем Таблицы базы
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
     public static final String DATABASE_NAME = "contactDb";
     public static final String TABLE_AREAS = "s_areas";
     public static final String TABLE_DEPART = "s_depart";
@@ -57,11 +57,11 @@ public class DBHelper extends SQLiteOpenHelper {
     // Объявляем Ключи таблицы s_otype
     public static final String KEY_TITLE = "TITLE";
 
-    // Объявляем Ключи таблицы s_fave
+    // Объявляем Ключи таблицы s_last
     public static final String KEY_IDUSER = "IDUSER";
 
-    // Объявляем Ключи таблицы s_last
-    // public static final String KEY_IDUSER = "IDUSER";
+    // Объявляем Ключи таблицы s_fave
+    public static final String KEY_FAVETYPE = "FAVETYPE";
 
 
 
@@ -91,6 +91,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("create table " + TABLE_DEPART + "(" + KEY_ID + " integer primary key," + KEY_DEPARTMENT + " text,"+ KEY_ORGID + " integer," + KEY_SORTING + " integer)");
         db.execSQL("create table " + TABLE_OTYPE + "(" + KEY_ID + " integer primary key," + KEY_TITLE + " text)");
         db.execSQL("create table " + TABLE_LAST + "(" + KEY_ID + " integer primary key," + KEY_IDUSER + " integer," + KEY_FIO + " text," + KEY_STATUS + " text)");
+        db.execSQL("create table " + TABLE_FAVE + "(" + KEY_ID + " integer primary key," + KEY_FAVETYPE + " integer," + KEY_SNAME +" text)");
 
     }
 
@@ -105,6 +106,10 @@ public class DBHelper extends SQLiteOpenHelper {
 //            db.execSQL("drop table if exist " + TABLE_OTYPE);
             db.execSQL("create table " + TABLE_LAST + "(" + KEY_ID + " integer primary key," + KEY_IDUSER + " integer," + KEY_FIO + " text," + KEY_STATUS + " text)");
 //            onCreate(db);
+        }
+
+        if (oldVersion==2){
+            db.execSQL("create table " + TABLE_FAVE + "(" + KEY_ID + " integer primary key," + KEY_FAVETYPE + " integer," + KEY_SNAME +" text)");
         }
 
     }

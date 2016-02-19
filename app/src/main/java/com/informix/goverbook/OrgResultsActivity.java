@@ -42,11 +42,10 @@ public class OrgResultsActivity extends AppCompatActivity {
         for (int i=0;i<searchResult.getCount();i++) {
             if (searchResult.getItemAtPosition(i).equals("Отдел не указан")) {
                 searchResult.expandGroup(i);
-
-
-
             }
         }
+
+        
 
         searchResult.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override

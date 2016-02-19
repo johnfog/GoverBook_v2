@@ -222,6 +222,16 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+    
+    
+    private void tab3Actions() {
+        ListFaveList(database);
+        
+    }
+
+    private void ListFaveList(SQLiteDatabase database) {
+
+    }
 
 
     private void tab2Actions() {
