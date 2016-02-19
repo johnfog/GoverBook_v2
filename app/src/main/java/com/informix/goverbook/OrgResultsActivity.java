@@ -38,6 +38,8 @@ public class OrgResultsActivity extends AppCompatActivity {
         org.DrawOrgContact(searchResult, getApplicationContext());
         searchResult.setGroupIndicator(getResources().getDrawable(R.drawable.userliststate));
 
+        groupCount=searchResult.getCount();
+
 
         for (int i=0;i<searchResult.getCount();i++) {
             if (searchResult.getItemAtPosition(i).equals("Отдел не указан")) {
@@ -45,7 +47,8 @@ public class OrgResultsActivity extends AppCompatActivity {
             }
         }
 
-        
+
+
 
         searchResult.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
@@ -110,7 +113,6 @@ public class OrgResultsActivity extends AppCompatActivity {
 
 
     private void expandItems() {
-        groupCount=searchResult.getCount();
 
         for (int i=0;i<groupCount;i++) {
             try {
