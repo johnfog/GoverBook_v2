@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/expand"
+        android:title="@string/expand_title"
+        android:orderInCategory="1"
+        android:icon="@mipmap/ic_chevron_double_down"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/search"
+        android:title="@string/search_title"
+        android:orderInCategory="2"
+        android:icon="@mipmap/ic_menu_w"
+        app:showAsAction="ifRoom"/>
+
+</menu>

@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -17,6 +18,9 @@ public class OrgResultsActivity extends AppCompatActivity {
     DBHelper dbHelper;
     OrgContact org;
     Intent intent;
+    ExpandableListView searchResult;
+    boolean expanded = false;
+    int groupCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,13 +30,23 @@ public class OrgResultsActivity extends AppCompatActivity {
 
         dbHelper = new DBHelper(this);
         SQLiteDatabase database = dbHelper.getReadableDatabase();
-        ExpandableListView searchResult = (ExpandableListView) findViewById(R.id.orgResultList);
+        searchResult = (ExpandableListView) findViewById(R.id.orgResultList);
         intent = getIntent();
         String clickedOrgName = intent.getStringExtra("orgName");
         initToolbar(clickedOrgName);
         org=dbHelper.searchOrgByName(clickedOrgName, database);
         org.DrawOrgContact(searchResult, getApplicationContext());
         searchResult.setGroupIndicator(getResources().getDrawable(R.drawable.userliststate));
+
+
+        for (int i=0;i<searchResult.getCount();i++) {
+            if (searchResult.getItemAtPosition(i).equals("Отдел не указан")) {
+                searchResult.expandGroup(i);
+
+
+
+            }
+        }
 
         searchResult.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
@@ -52,13 +66,57 @@ public class OrgResultsActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(orgName);
 
+        toolbar.inflateMenu(R.menu.toolbar_detail_menu);
+
+
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
+
+                switch (item.getItemId()) {
+                    case R.id.expand:
+                        if (expanded)
+                            collapseItems();
+                        else
+                            expandItems();
+                        break;
+                    case R.id.search:
+                        setupMenu();
+
+                }
                 return false;
             }
         });
-        toolbar.inflateMenu(R.menu.toolbar_menu);
+
+
+
+    }
+
+    private void collapseItems() {
+
+
+        for (int i=0;i<groupCount;i++) {
+            searchResult.collapseGroup(i);
+        }
+
+        toolbar.getMenu().getItem(0).setIcon(R.mipmap.ic_chevron_double_down);
+        expanded=false;
+    }
+
+
+    private void expandItems() {
+        groupCount=searchResult.getCount();
+
+        for (int i=0;i<groupCount;i++) {
+            searchResult.expandGroup(i);
+        }
+        toolbar.getMenu().getItem(0).setIcon(R.mipmap.ic_chevron_double_up);
+        expanded=true;
+    }
+
+    private void setupMenu() {
+        intent = new Intent(OrgResultsActivity.this, SettingsActivity.class);
+        startActivityForResult(intent, 1);
     }
 
     // Метод сворачиваня клавиатуры

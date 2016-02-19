@@ -5,5 +5,6 @@
     <string name="workers_title">Сотрудники</string>
     <string name="orgs_title">Организации</string>
     <string name="settings_title">Настройки</string>
+    <string name="expand_title">Развернуть</string>
 
 </resources>
