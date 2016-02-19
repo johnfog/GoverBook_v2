@@ -21,6 +21,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -225,11 +226,33 @@ public class MainActivity extends AppCompatActivity {
     
     
     private void tab3Actions() {
-        ListFaveList(database);
+        ListFaveList();
         
     }
 
-    private void ListFaveList(SQLiteDatabase database) {
+    private void ListFaveList() {
+        String[][] favelist;
+        favelist =dbHelper.ListFave(database);
+
+        ListView listView = (ListView) findViewById(R.id.faveList);
+        List<Map<String, String>> data = new ArrayList<Map<String, String>>();
+        for (int i=0;i<favelist[0].length;i++){
+            Map<String, String> datum = new HashMap<String, String>(2);
+            datum.put("fio", favelist[0][i]);
+            datum.put("type", favelist[1][i]);
+            data.add(datum);
+        }
+
+        SimpleAdapter adapter1 = new SimpleAdapter(listView.getContext(), data,
+                android.R.layout.simple_list_item_2,
+                new String[] {"fio", "type"},
+                new int[] {android.R.id.text1,
+                        android.R.id.text2});
+
+        listView.setAdapter(adapter1);
+
+
+
 
     }
 
@@ -366,6 +389,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case 2:
                         viewPager.setCurrentItem(2);
+                        tab3Actions();
                         toolbar.setTitle("Избранное");
                         break;
 

@@ -64,9 +64,9 @@ public class  ContactDetailActivity extends AppCompatActivity implements View.On
     }
 
 
-    private void initToolbar(String orgName) {
+    private void initToolbar(String fioName) {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(orgName);
+        toolbar.setTitle(fioName);
 
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override

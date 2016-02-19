@@ -21,6 +21,7 @@ public class OrgResultsActivity extends AppCompatActivity {
     ExpandableListView searchResult;
     boolean expanded = false;
     int groupCount;
+    String clickedOrgName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +33,7 @@ public class OrgResultsActivity extends AppCompatActivity {
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         searchResult = (ExpandableListView) findViewById(R.id.orgResultList);
         intent = getIntent();
-        String clickedOrgName = intent.getStringExtra("orgName");
+        clickedOrgName = intent.getStringExtra("orgName");
         initToolbar(clickedOrgName);
         org=dbHelper.searchOrgByName(clickedOrgName, database);
         org.DrawOrgContact(searchResult, getApplicationContext());
@@ -67,7 +68,6 @@ public class OrgResultsActivity extends AppCompatActivity {
     private void initToolbar(String orgName) {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(orgName);
-
         toolbar.inflateMenu(R.menu.toolbar_detail_menu);
 
 
@@ -84,6 +84,10 @@ public class OrgResultsActivity extends AppCompatActivity {
                         break;
                     case R.id.search:
                         setupMenu();
+                        break;
+                    case R.id.fave:
+                        addFave();
+                        break;
 
                 }
                 return false;
@@ -92,6 +96,10 @@ public class OrgResultsActivity extends AppCompatActivity {
 
 
 
+    }
+
+    private void addFave() {
+        dbHelper.saveFave(clickedOrgName,DBHelper.TYPE_ORG,dbHelper);
     }
 
     private void collapseItems() {
