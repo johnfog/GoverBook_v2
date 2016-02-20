@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,8 +34,8 @@ public class  ContactDetailActivity extends AppCompatActivity implements View.On
         TextView tvStatus = (TextView) findViewById(R.id.tvStatus);
         tvEmail = (TextView) findViewById(R.id.tvEmail);
         TextView tvIpPhone = (TextView) findViewById(R.id.tvIpPhone);
-        Button btnDial = (Button) findViewById(R.id.btnDial);
-        Button btnEmail = (Button) findViewById(R.id.btnEmail);
+        ImageButton btnDial = (ImageButton) findViewById(R.id.btnDial);
+        ImageButton btnEmail = (ImageButton) findViewById(R.id.btnEmail);
         DBHelper dbHelper =new DBHelper(this);
         intent=getIntent();
         SQLiteDatabase database = dbHelper.getReadableDatabase();
