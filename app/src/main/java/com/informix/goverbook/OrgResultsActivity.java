@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ExpandableListView;
+import android.widget.Toast;
 
 public class OrgResultsActivity extends AppCompatActivity {
     private Toolbar toolbar;
@@ -99,7 +100,22 @@ public class OrgResultsActivity extends AppCompatActivity {
     }
 
     private void addFave() {
-        dbHelper.saveFave(clickedOrgName,DBHelper.TYPE_ORG,dbHelper);
+        boolean saved;
+        Toast toast;
+
+        saved=dbHelper.saveFave(clickedOrgName,DBHelper.TYPE_ORG,0,dbHelper);
+
+        if (saved) {
+            toast = Toast.makeText(getApplicationContext(),
+                    "Организация была добавлена в Избранные", Toast.LENGTH_SHORT);
+        }
+            else
+        {
+            toast = Toast.makeText(getApplicationContext(),
+                    "Организация уже в Избранных", Toast.LENGTH_SHORT);
+        }
+
+        toast.show();
     }
 
     private void collapseItems() {

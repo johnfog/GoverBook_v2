@@ -19,7 +19,7 @@ import java.util.ArrayList;
  */
 public class DBHelper extends SQLiteOpenHelper {
     // Объявляем Таблицы базы
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
     public static final String DATABASE_NAME = "contactDb";
     public static final String TABLE_AREAS = "s_areas";
     public static final String TABLE_DEPART = "s_depart";
@@ -63,8 +63,8 @@ public class DBHelper extends SQLiteOpenHelper {
     // Объявляем Ключи таблицы s_fave
     public static final String KEY_FAVETYPE = "FAVETYPE";
 
-    public static final int TYPE_WORKER= 0;
-    public static final int TYPE_ORG= 1;
+    public static final String TYPE_WORKER= "WORKER";
+    public static final String TYPE_ORG= "ORG";
 
 
 
@@ -95,7 +95,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("create table " + TABLE_DEPART + "(" + KEY_ID + " integer primary key," + KEY_DEPARTMENT + " text,"+ KEY_ORGID + " integer," + KEY_SORTING + " integer)");
         db.execSQL("create table " + TABLE_OTYPE + "(" + KEY_ID + " integer primary key," + KEY_TITLE + " text)");
         db.execSQL("create table " + TABLE_LAST + "(" + KEY_ID + " integer primary key," + KEY_IDUSER + " integer," + KEY_FIO + " text," + KEY_STATUS + " text)");
-        db.execSQL("create table " + TABLE_FAVE + "(" + KEY_ID + " integer primary key," + KEY_FAVETYPE + " integer," + KEY_SNAME + " text)");
+        db.execSQL("create table " + TABLE_FAVE + "(" + KEY_ID + " integer primary key," + KEY_FAVETYPE + " integer," + KEY_IDUSER + " integer," + KEY_SNAME + " text)");
 
     }
 
@@ -113,7 +113,11 @@ public class DBHelper extends SQLiteOpenHelper {
         }
 
         if (oldVersion==2){
-            db.execSQL("create table " + TABLE_FAVE + "(" + KEY_ID + " integer primary key," + KEY_FAVETYPE + " integer," + KEY_SNAME +" text)");
+            db.execSQL("create table " + TABLE_FAVE + "(" + KEY_ID + " integer primary key," + KEY_FAVETYPE + " integer," + KEY_IDUSER + " integer," + KEY_SNAME + " text)");
+        }
+
+        if (oldVersion==3){
+            db.execSQL("create table " + TABLE_FAVE + "(" + KEY_ID + " integer primary key," + KEY_FAVETYPE + " integer," + KEY_IDUSER + " integer," + KEY_SNAME + " text)");
         }
 
     }
@@ -422,12 +426,26 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
 
-    public void saveFave(String name,int type,DBHelper dbHelper){
+    public boolean saveFave(String name,String type,int id,DBHelper dbHelper){
         SQLiteDatabase database = dbHelper.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(DBHelper.KEY_SNAME, name);
-        contentValues.put(DBHelper.KEY_FAVETYPE, type);
-        database.insert(DBHelper.TABLE_FAVE, null, contentValues);
+        boolean saved=false;
+
+        String querry;
+        querry = "SELECT * FROM " + DBHelper.TABLE_FAVE+" where "+DBHelper.KEY_SNAME+" == \""+name+"\" ";
+        Cursor cursor = database.rawQuery(querry, null);
+
+        if (cursor.getCount()==0) {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(DBHelper.KEY_SNAME, name);
+            contentValues.put(DBHelper.KEY_FAVETYPE, type);
+            contentValues.put(DBHelper.KEY_IDUSER, id);
+            database.insert(DBHelper.TABLE_FAVE, null, contentValues);
+            saved=true;
+        }
+        else
+            saved=false;
+
+        return saved;
 
     }
 
@@ -441,24 +459,27 @@ public class DBHelper extends SQLiteOpenHelper {
 
         int typeIndex = cursor.getColumnIndex(DBHelper.KEY_FAVETYPE);
         int nameIndex = cursor.getColumnIndex(DBHelper.KEY_SNAME);
+        int userIndex = cursor.getColumnIndex(DBHelper.KEY_IDUSER);
 
         //Вывод результатов
         int i=0;
         if (cursor.getCount() > 0) {
-            result = new String[2][cursor.getCount()];
+            result = new String[3][cursor.getCount()];
             if (cursor.moveToFirst()) {
                 do {
                     result[0][i] = cursor.getString(typeIndex);
                     result[1][i] = cursor.getString(nameIndex);
+                    result[2][i] = cursor.getString(userIndex);
                     i++;
 
                 } while (cursor.moveToNext());
             }
             cursor.close();
         } else {
-            result = new String[1][1];
-            result[0][0] = "Пусто";
-            result[1][0] = "1";
+            result = new String[3][1];
+            result[0][0] = DBHelper.TYPE_WORKER;
+            result[1][0] = "Список пуст";
+            result[2][0] = "0";
         }
 
         cursor.close();

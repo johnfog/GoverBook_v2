@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,6 +28,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.informix.goverbook.adapters.ExpListAdapter;
+import com.informix.goverbook.adapters.FaveListAdapter;
 import com.informix.goverbook.adapters.TabsAdapter;
 
 import java.io.IOException;
@@ -231,25 +233,34 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void ListFaveList() {
-        String[][] favelist;
+        final String[][] favelist;
         favelist =dbHelper.ListFave(database);
 
         ListView listView = (ListView) findViewById(R.id.faveList);
-        List<Map<String, String>> data = new ArrayList<Map<String, String>>();
-        for (int i=0;i<favelist[0].length;i++){
-            Map<String, String> datum = new HashMap<String, String>(2);
-            datum.put("fio", favelist[0][i]);
-            datum.put("type", favelist[1][i]);
-            data.add(datum);
-        }
+        FaveListAdapter faveListAdapter = new FaveListAdapter(this,favelist[0],favelist[1]);
+        listView.setAdapter(faveListAdapter);
 
-        SimpleAdapter adapter1 = new SimpleAdapter(listView.getContext(), data,
-                android.R.layout.simple_list_item_2,
-                new String[] {"fio", "type"},
-                new int[] {android.R.id.text1,
-                        android.R.id.text2});
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d("MyLog",""+favelist[0][position]+"    "+DBHelper.TYPE_ORG);
+                if (favelist[0][position].equals(DBHelper.TYPE_ORG)) {
+                    String clickedOrgName = parent.getItemAtPosition(position).toString();
+                    intent = new Intent(MainActivity.this, OrgResultsActivity.class);
+                    intent.putExtra("orgName", clickedOrgName);
+                    startActivity(intent);
+                }
 
-        listView.setAdapter(adapter1);
+                if (favelist[0][position].equals(DBHelper.TYPE_WORKER)) {
+                    int clickedId = Integer.parseInt(favelist[2][position]);
+                    intent = new Intent(MainActivity.this, ContactDetailActivity.class);
+                    intent.putExtra("userid", clickedId);
+                    startActivity(intent);
+
+                }
+
+            }
+        });
 
 
 

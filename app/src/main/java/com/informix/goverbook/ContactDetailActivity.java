@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class  ContactDetailActivity extends AppCompatActivity implements View.OnClickListener{
     private static final int LAYOUT = R.style.AppDefault;
@@ -18,6 +19,7 @@ public class  ContactDetailActivity extends AppCompatActivity implements View.On
     TextView tvPhone;
     TextView tvEmail;
     Intent intent;
+    DBHelper dbHelper;
 
 
     @Override
@@ -25,6 +27,8 @@ public class  ContactDetailActivity extends AppCompatActivity implements View.On
         setTheme(LAYOUT);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_detail);
+
+        dbHelper = new DBHelper(this);
         tvPhone = (TextView) findViewById(R.id.tvPhone);
         TextView tvStatus = (TextView) findViewById(R.id.tvStatus);
         tvEmail = (TextView) findViewById(R.id.tvEmail);
@@ -74,8 +78,52 @@ public class  ContactDetailActivity extends AppCompatActivity implements View.On
                 return false;
             }
         });
-        toolbar.inflateMenu(R.menu.toolbar_menu);
+        toolbar.inflateMenu(R.menu.toolbar_detail_menu);
+
+
+
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+
+                switch (item.getItemId()) {
+                    case R.id.search:
+                        setupMenu();
+                        break;
+                    case R.id.fave:
+                        addFave();
+                        break;
+
+                }
+                return false;
+            }
+        });
     }
+
+    private void setupMenu() {
+        intent = new Intent(ContactDetailActivity.this, SettingsActivity.class);
+        startActivityForResult(intent, 1);
+    }
+
+
+    private void addFave()
+
+    {
+        boolean saved;
+        Toast toast;
+        saved=dbHelper.saveFave(userContact.FIO, DBHelper.TYPE_WORKER,userContact.id, dbHelper);
+
+        if (saved) {
+            toast = Toast.makeText(getApplicationContext(),
+                    "Контакт был добавлен в Избранные", Toast.LENGTH_SHORT);
+
+        }else
+            toast = Toast.makeText(getApplicationContext(),
+                    "Контакт уже в Избранных", Toast.LENGTH_SHORT);
+
+        toast.show();
+    }
+
 
     @Override
     public void onClick(View v) {
