@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.informix.goverbook.DBHelper;
 import com.informix.goverbook.R;
 
 import java.util.ArrayList;
@@ -38,10 +39,12 @@ public class FaveListAdapter extends ArrayAdapter{
 
 
         String str = fType[position];
-        if (str.equals("1")) {
+        if (str.equals(DBHelper.TYPE_ORG)) {
             imageView.setImageResource(R.mipmap.ic_home_modern);
 
-        } else {
+        }
+
+        if (str.equals(DBHelper.TYPE_WORKER)) {
             imageView.setImageResource(R.mipmap.ic_account_card_details);
         }
 
