@@ -19,7 +19,7 @@ import java.util.ArrayList;
  */
 public class DBHelper extends SQLiteOpenHelper {
     // Объявляем Таблицы базы
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
     public static final String DATABASE_NAME = "contactDb";
     public static final String TABLE_AREAS = "s_areas";
     public static final String TABLE_DEPART = "s_depart";
@@ -102,21 +102,10 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
-        if (oldVersion==1) {
-//            db.execSQL("drop table if exist " + TABLE_USERS);
-//            db.execSQL("drop table if exist " + TABLE_ORG);
-//            db.execSQL("drop table if exist " + TABLE_AREAS);
-//            db.execSQL("drop table if exist " + TABLE_DEPART);
-//            db.execSQL("drop table if exist " + TABLE_OTYPE);
+        if (oldVersion<5){
+            db.execSQL("drop table if exists " + TABLE_FAVE);
+            db.execSQL("drop table if exists " + TABLE_LAST);
             db.execSQL("create table " + TABLE_LAST + "(" + KEY_ID + " integer primary key," + KEY_IDUSER + " integer," + KEY_FIO + " text," + KEY_STATUS + " text)");
-//            onCreate(db);
-        }
-
-        if (oldVersion==2){
-            db.execSQL("create table " + TABLE_FAVE + "(" + KEY_ID + " integer primary key," + KEY_FAVETYPE + " integer," + KEY_IDUSER + " integer," + KEY_SNAME + " text)");
-        }
-
-        if (oldVersion==3){
             db.execSQL("create table " + TABLE_FAVE + "(" + KEY_ID + " integer primary key," + KEY_FAVETYPE + " integer," + KEY_IDUSER + " integer," + KEY_SNAME + " text)");
         }
 

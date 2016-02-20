@@ -199,8 +199,6 @@ public class MainActivity extends AppCompatActivity {
         inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
     }
 
-
-
     private void tab1Actions() {
         etSearch.setText("");
 
@@ -223,9 +221,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
     }
-    
     
     private void tab3Actions() {
         ListFaveList();
@@ -243,7 +239,6 @@ public class MainActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d("MyLog",""+favelist[0][position]+"    "+DBHelper.TYPE_ORG);
                 if (favelist[0][position].equals(DBHelper.TYPE_ORG)) {
                     String clickedOrgName = parent.getItemAtPosition(position).toString();
                     intent = new Intent(MainActivity.this, OrgResultsActivity.class);
@@ -256,17 +251,12 @@ public class MainActivity extends AppCompatActivity {
                     intent = new Intent(MainActivity.this, ContactDetailActivity.class);
                     intent.putExtra("userid", clickedId);
                     startActivity(intent);
-
                 }
 
             }
         });
 
-
-
-
     }
-
 
     private void tab2Actions() {
         groups.clear();
