@@ -32,5 +32,6 @@
             android:layout_marginLeft="@dimen/menu_child_margin_left"
             android:textColor="@color/colorPrimary"
             android:textSize="@dimen/menu_child_description_size" />
+
     </RelativeLayout>
 </LinearLayout>

@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Spinner;
 
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ import java.util.ArrayList;
  */
 public class DBHelper extends SQLiteOpenHelper {
     // Объявляем Таблицы базы
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 5;
     public static final String DATABASE_NAME = "contactDb";
     public static final String TABLE_AREAS = "s_areas";
     public static final String TABLE_DEPART = "s_depart";
@@ -63,8 +64,10 @@ public class DBHelper extends SQLiteOpenHelper {
     // Объявляем Ключи таблицы s_fave
     public static final String KEY_FAVETYPE = "FAVETYPE";
 
-    public static final int TYPE_WORKER= 0;
-    public static final int TYPE_ORG= 1;
+    public static final String TYPE_WORKER= "WORKER";
+    public static final String TYPE_ORG= "ORG";
+
+    public ListView searFioResult;
 
 
 
@@ -95,25 +98,18 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("create table " + TABLE_DEPART + "(" + KEY_ID + " integer primary key," + KEY_DEPARTMENT + " text,"+ KEY_ORGID + " integer," + KEY_SORTING + " integer)");
         db.execSQL("create table " + TABLE_OTYPE + "(" + KEY_ID + " integer primary key," + KEY_TITLE + " text)");
         db.execSQL("create table " + TABLE_LAST + "(" + KEY_ID + " integer primary key," + KEY_IDUSER + " integer," + KEY_FIO + " text," + KEY_STATUS + " text)");
-        db.execSQL("create table " + TABLE_FAVE + "(" + KEY_ID + " integer primary key," + KEY_FAVETYPE + " integer," + KEY_SNAME + " text)");
+        db.execSQL("create table " + TABLE_FAVE + "(" + KEY_ID + " integer primary key," + KEY_FAVETYPE + " integer," + KEY_IDUSER + " integer," + KEY_SNAME + " text)");
 
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
-        if (oldVersion==1) {
-//            db.execSQL("drop table if exist " + TABLE_USERS);
-//            db.execSQL("drop table if exist " + TABLE_ORG);
-//            db.execSQL("drop table if exist " + TABLE_AREAS);
-//            db.execSQL("drop table if exist " + TABLE_DEPART);
-//            db.execSQL("drop table if exist " + TABLE_OTYPE);
+        if (oldVersion<5){
+            db.execSQL("drop table if exists " + TABLE_FAVE);
+            db.execSQL("drop table if exists " + TABLE_LAST);
             db.execSQL("create table " + TABLE_LAST + "(" + KEY_ID + " integer primary key," + KEY_IDUSER + " integer," + KEY_FIO + " text," + KEY_STATUS + " text)");
-//            onCreate(db);
-        }
-
-        if (oldVersion==2){
-            db.execSQL("create table " + TABLE_FAVE + "(" + KEY_ID + " integer primary key," + KEY_FAVETYPE + " integer," + KEY_SNAME +" text)");
+            db.execSQL("create table " + TABLE_FAVE + "(" + KEY_ID + " integer primary key," + KEY_FAVETYPE + " integer," + KEY_IDUSER + " integer," + KEY_SNAME + " text)");
         }
 
     }
@@ -421,13 +417,31 @@ public class DBHelper extends SQLiteOpenHelper {
 
     }
 
+    public boolean getItemSaved(String name,DBHelper dbHelper)
+    {
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+        boolean saved;
 
-    public void saveFave(String name,int type,DBHelper dbHelper){
+        String querry;
+        querry = "SELECT * FROM " + DBHelper.TABLE_FAVE+" where "+DBHelper.KEY_SNAME+" == \""+name+"\" ";
+        Cursor cursor = database.rawQuery(querry, null);
+
+        if (cursor.getCount()>0) saved=true;
+        else saved = false;
+        return saved;
+
+    }
+
+
+
+    public void saveFave(String name,String type,int id,DBHelper dbHelper){
         SQLiteDatabase database = dbHelper.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(DBHelper.KEY_SNAME, name);
-        contentValues.put(DBHelper.KEY_FAVETYPE, type);
-        database.insert(DBHelper.TABLE_FAVE, null, contentValues);
+
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(DBHelper.KEY_SNAME, name);
+            contentValues.put(DBHelper.KEY_FAVETYPE, type);
+            contentValues.put(DBHelper.KEY_IDUSER, id);
+            database.insert(DBHelper.TABLE_FAVE, null, contentValues);
 
     }
 
@@ -441,24 +455,27 @@ public class DBHelper extends SQLiteOpenHelper {
 
         int typeIndex = cursor.getColumnIndex(DBHelper.KEY_FAVETYPE);
         int nameIndex = cursor.getColumnIndex(DBHelper.KEY_SNAME);
+        int userIndex = cursor.getColumnIndex(DBHelper.KEY_IDUSER);
 
         //Вывод результатов
         int i=0;
         if (cursor.getCount() > 0) {
-            result = new String[2][cursor.getCount()];
+            result = new String[3][cursor.getCount()];
             if (cursor.moveToFirst()) {
                 do {
                     result[0][i] = cursor.getString(typeIndex);
                     result[1][i] = cursor.getString(nameIndex);
+                    result[2][i] = cursor.getString(userIndex);
                     i++;
 
                 } while (cursor.moveToNext());
             }
             cursor.close();
         } else {
-            result = new String[1][1];
-            result[0][0] = "Пусто";
-            result[1][0] = "1";
+            result = new String[3][1];
+            result[0][0] = DBHelper.TYPE_WORKER;
+            result[1][0] = "Список пуст";
+            result[2][0] = "0";
         }
 
         cursor.close();

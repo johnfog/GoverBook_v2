@@ -5,4 +5,6 @@
     <color name="colorWhite">#FFFFFF</color>
     <color name="mainBackground">#FFFFFF</color>
     <color name="colorBlack">#191919</color>
+    <color name="textColor">#333333</color>
+    <color name="colorPrimary2">#0076a2</color>
 </resources>

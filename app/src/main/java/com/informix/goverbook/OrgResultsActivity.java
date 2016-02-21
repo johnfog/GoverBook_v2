@@ -7,11 +7,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ExpandableListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 public class OrgResultsActivity extends AppCompatActivity {
     private Toolbar toolbar;
@@ -22,6 +25,8 @@ public class OrgResultsActivity extends AppCompatActivity {
     boolean expanded = false;
     int groupCount;
     String clickedOrgName;
+    boolean saved;
+    private Menu menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,9 +37,13 @@ public class OrgResultsActivity extends AppCompatActivity {
         dbHelper = new DBHelper(this);
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         searchResult = (ExpandableListView) findViewById(R.id.orgResultList);
+        TextView orgName = (TextView) findViewById(R.id.tvOrgName);
         intent = getIntent();
         clickedOrgName = intent.getStringExtra("orgName");
-        initToolbar(clickedOrgName);
+        orgName.setText(clickedOrgName);
+        initToolbar();
+
+
         org=dbHelper.searchOrgByName(clickedOrgName, database);
         org.DrawOrgContact(searchResult, getApplicationContext());
         searchResult.setGroupIndicator(getResources().getDrawable(R.drawable.userliststate));
@@ -65,10 +74,16 @@ public class OrgResultsActivity extends AppCompatActivity {
 
     }
 
-    private void initToolbar(String orgName) {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        this.menu=menu;
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    private void initToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(orgName);
         toolbar.inflateMenu(R.menu.toolbar_detail_menu);
+        saved=dbHelper.getItemSaved(clickedOrgName,dbHelper);
 
 
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
@@ -99,7 +114,21 @@ public class OrgResultsActivity extends AppCompatActivity {
     }
 
     private void addFave() {
-        dbHelper.saveFave(clickedOrgName,DBHelper.TYPE_ORG,dbHelper);
+        Toast toast;
+
+        dbHelper.saveFave(clickedOrgName,DBHelper.TYPE_ORG,0,dbHelper);
+
+        if (saved) {
+            toast = Toast.makeText(getApplicationContext(),
+                    "Организация была добавлена в Избранные", Toast.LENGTH_SHORT);
+        }
+            else
+        {
+            toast = Toast.makeText(getApplicationContext(),
+                    "Организация уже в Избранных", Toast.LENGTH_SHORT);
+        }
+
+        toast.show();
     }
 
     private void collapseItems() {

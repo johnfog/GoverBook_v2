@@ -16,11 +16,10 @@
             android:layout_height="wrap_content">
 
             <include android:id="@+id/toolbar"
-                layout="@layout/toolbar"/>
+                layout="@layout/toolbar_detail"/>
 
-            <include android:id="@+id/searchline"
-                layout="@layout/searchline"/>
-
+            <include android:id="@+id/header"
+                layout="@layout/detail_org_header"/>
 
         </android.support.design.widget.AppBarLayout>
         
@@ -31,7 +30,7 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_marginTop="87dp" />
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     </android.support.design.widget.CoordinatorLayout>
 
