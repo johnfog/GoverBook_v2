@@ -29,44 +29,12 @@ public class  ContactDetailActivity extends AppCompatActivity implements View.On
 
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.toolbar_detail_menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        this.faveItem= menu.findItem(R.id.fave);
-
-        saved=dbHelper.getItemSaved(userContact.FIO,dbHelper);
-
-        if (saved){
-            faveItem.setIcon(R.mipmap.ic_star);
-        }
-        return super.onPrepareOptionsMenu(menu);
-    }
-
-
-    @Override
     protected void onCreate(Bundle savedInstanceState){
 
         setTheme(LAYOUT);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_detail);
 
-        toolbar = (Toolbar)findViewById(R.id.toolbar);
-
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-
-            }
-        });
 
         dbHelper = new DBHelper(this);
         tvPhone = (TextView) findViewById(R.id.tvPhone);
@@ -99,8 +67,6 @@ public class  ContactDetailActivity extends AppCompatActivity implements View.On
         else
             btnEmail.setEnabled(false);
 
-//        ActivityCompat.invalidateOptionsMenu(this);
-//        invalidateOptionsMenu();
         supportInvalidateOptionsMenu();
 
 
@@ -112,6 +78,25 @@ public class  ContactDetailActivity extends AppCompatActivity implements View.On
         return num;
     }
 
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.toolbar_detail_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        this.faveItem= menu.findItem(R.id.fave);
+
+        saved=dbHelper.getItemSaved(userContact.FIO,dbHelper);
+
+        if (saved){
+            faveItem.setIcon(R.mipmap.ic_star);
+        }
+        return super.onPrepareOptionsMenu(menu);
+    }
+
     @Override
     public void onAttachFragment(Fragment fragment) {
         fragment.setHasOptionsMenu(true);
@@ -119,6 +104,20 @@ public class  ContactDetailActivity extends AppCompatActivity implements View.On
     }
 
     private void initToolbar() {
+
+        toolbar = (Toolbar)findViewById(R.id.toolbar);
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+
+            }
+        });
 
 
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {

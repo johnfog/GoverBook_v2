@@ -6,6 +6,7 @@ package com.informix.goverbook.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ public class FaveFragment extends AbstractTabFragment {
         fragment.setTitle(context.getString(R.string.fave_title));
         return fragment;
     }
+
 
     @Nullable
     @Override

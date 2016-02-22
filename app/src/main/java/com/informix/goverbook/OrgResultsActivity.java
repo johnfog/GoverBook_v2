@@ -45,19 +45,6 @@ public class OrgResultsActivity extends AppCompatActivity {
         clickedOrgName = intent.getStringExtra("orgName");
         orgName.setText(clickedOrgName);
 
-        toolbar = (Toolbar)findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-
-            }
-        });
-
 
         org=dbHelper.searchOrgByName(clickedOrgName, database);
         org.DrawOrgContact(searchResult, getApplicationContext());
@@ -73,8 +60,6 @@ public class OrgResultsActivity extends AppCompatActivity {
         }
 
 
-
-
         searchResult.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
@@ -88,8 +73,8 @@ public class OrgResultsActivity extends AppCompatActivity {
 
         initToolbar();
         supportInvalidateOptionsMenu();
-        invalidateOptionsMenu();
-        ActivityCompat.invalidateOptionsMenu(this);
+//        invalidateOptionsMenu();
+//        ActivityCompat.invalidateOptionsMenu(this);
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
@@ -114,7 +99,22 @@ public class OrgResultsActivity extends AppCompatActivity {
 
 
     private void initToolbar() {
+
         saved=dbHelper.getItemSaved(clickedOrgName,dbHelper);
+        toolbar = (Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+
+            }
+        });
+
+
 
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override

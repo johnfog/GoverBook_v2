@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -189,6 +191,15 @@ public class MainActivity extends AppCompatActivity {
         
     }
 
+    @Override
+    protected void onResume() {
+        if (viewPager.getCurrentItem()==2)
+        {
+            tab3Actions();
+        }
+        super.onResume();
+    }
+
     private void ListFaveList() {
         final String[][] favelist;
         favelist =dbHelper.ListFave(database);
@@ -304,14 +315,18 @@ public class MainActivity extends AppCompatActivity {
 
     private void initToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("GoverBook");
 
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                initNavigationView();
+                switch (item.getItemId()) {
+                    case R.id.search:
+                        setupMenu();
+                        break;
 
+                }
                 return false;
+
             }
         });
         toolbar.inflateMenu(R.menu.toolbar_menu);
@@ -319,6 +334,17 @@ public class MainActivity extends AppCompatActivity {
 
     private void initNavigationView() {
 
+
+
+    }
+
+    private void setupMenu() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout_main);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            drawer.openDrawer(GravityCompat.START);
+        }
 
 
     }
@@ -340,17 +366,14 @@ public class MainActivity extends AppCompatActivity {
                     case 0:
                         viewPager.setCurrentItem(0);
                         tab1Actions();
-                        toolbar.setTitle("Сотрудники");
                         break;
                     case 1:
                         viewPager.setCurrentItem(1);
                         tab2Actions();
-                        toolbar.setTitle("Организации");
                         break;
                     case 2:
                         viewPager.setCurrentItem(2);
                         tab3Actions();
-                        toolbar.setTitle("Избранное");
                         break;
 
                 }
