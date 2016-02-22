@@ -18,7 +18,7 @@
             android:orderInCategory="3"
             android:icon="@mipmap/ic_menu_w"/>
         <item
-            android:title="@string/search_title"
+            android:title="@string/navbar_menu_title"
             android:id="@+id/nav_search"
             android:orderInCategory="4"
             android:icon="@mipmap/ic_search_wh"/>

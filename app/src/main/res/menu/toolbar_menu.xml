@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/search"
-        android:title="@string/search_title"
+        android:id="@+id/navbar_menu"
+        android:title="@string/navbar_menu_title"
         android:orderInCategory="1"
         android:icon="@mipmap/ic_menu_w"
         app:showAsAction="ifRoom"/>

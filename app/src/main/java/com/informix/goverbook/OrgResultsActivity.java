@@ -128,9 +128,6 @@ public class OrgResultsActivity extends AppCompatActivity {
 
             }
         });
-
-
-
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -142,7 +139,7 @@ public class OrgResultsActivity extends AppCompatActivity {
                         else
                             expandItems();
                         break;
-                    case R.id.search:
+                    case R.id.navbar_menu:
                         setupMenu();
                         break;
                     case R.id.fave:
@@ -176,13 +173,10 @@ public class OrgResultsActivity extends AppCompatActivity {
             saved=true;
 
         }
-
         toast.show();
     }
 
     private void collapseItems() {
-
-
         for (int i=0;i<groupCount;i++) {
             try {
                 searchResult.collapseGroup(i);

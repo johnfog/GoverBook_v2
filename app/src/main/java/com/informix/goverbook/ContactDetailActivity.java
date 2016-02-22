@@ -145,7 +145,7 @@ public class  ContactDetailActivity extends AppCompatActivity implements View.On
             public boolean onMenuItemClick(MenuItem item) {
 
                 switch (item.getItemId()) {
-                    case R.id.search:
+                    case R.id.navbar_menu:
                         setupMenu();
                         break;
                     case R.id.fave:

@@ -14,9 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -319,7 +317,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.search:
+                    case R.id.navbar_menu:
                         setupMenu();
                         break;
 
