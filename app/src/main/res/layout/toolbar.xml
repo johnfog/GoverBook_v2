@@ -26,6 +26,7 @@ android:background="@drawable/shape_search_line">
     android:textSize="@dimen/edit_text_size"
     android:autoText="true"
     android:backgroundTint="#00000000"
+
    />
 
     </android.support.v7.widget.LinearLayoutCompat>
