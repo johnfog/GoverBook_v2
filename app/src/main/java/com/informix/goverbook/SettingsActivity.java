@@ -245,7 +245,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 for (int i = 0; i < departArray.length(); i++) {
                     JSONObject jsonorgs = departArray.getJSONObject(i);
                     contentValues.put(DBHelper.KEY_ID, jsonorgs.getInt(DBHelper.KEY_ID));
-                    contentValues.put(DBHelper.KEY_DEPARTMENT, modFioString(jsonorgs.getString(DBHelper.KEY_DEPARTMENT).replaceAll("&quot;","\'")));
+                    contentValues.put(DBHelper.KEY_DEPARTMENT, jsonorgs.getString(DBHelper.KEY_DEPARTMENT).replaceAll("&quot;","\'"));
 
                     if ((jsonorgs.getString(DBHelper.KEY_ORGID) != "null")) {
                         contentValues.put(DBHelper.KEY_ORGID, jsonorgs.getInt(DBHelper.KEY_ORGID));

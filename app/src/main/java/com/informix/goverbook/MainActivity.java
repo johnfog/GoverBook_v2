@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
@@ -15,6 +16,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -50,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
     ExpListAdapter adapterForOrgs;
     ArrayList<Integer> orgId = new ArrayList();
     ListView searchFioResult;
+    private NavigationView navigationView;
 
 
     private static final String REAL_AREA = "REAL_AREA";
@@ -334,6 +337,20 @@ public class MainActivity extends AppCompatActivity {
 
     private void initNavigationView() {
 
+        navigationView = (NavigationView) findViewById(R.id.navigation);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.nav_settings:
+                        intent = new Intent(MainActivity.this,SettingsActivity.class);
+                        startActivity(intent);
+                        break;
+                }
+
+                return false;
+            }
+        });
 
 
     }
