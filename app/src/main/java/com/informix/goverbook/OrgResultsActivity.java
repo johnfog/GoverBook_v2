@@ -3,13 +3,12 @@ package com.informix.goverbook;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.v4.app.ActivityCompat;
+import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,6 +29,7 @@ public class OrgResultsActivity extends AppCompatActivity {
     String clickedOrgName;
     boolean saved;
     MenuItem faveItem;
+    NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,18 +70,33 @@ public class OrgResultsActivity extends AppCompatActivity {
             }
         });
 
-
         initToolbar();
+        initNavigationView();
         supportInvalidateOptionsMenu();
-//        invalidateOptionsMenu();
-//        ActivityCompat.invalidateOptionsMenu(this);
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
     }
 
+    private void initNavigationView() {
+        navigationView = (NavigationView) findViewById(R.id.navigation);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.nav_settings:
+                        intent = new Intent(OrgResultsActivity.this,SettingsActivity.class);
+                        startActivity(intent);
+                        break;
+                }
+
+                return false;
+            }
+        });
+    }
+
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.toolbar_detail_menu, menu);
+        getMenuInflater().inflate(R.menu.toolbar_detail_org_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 

@@ -5,13 +5,6 @@
 
 
     <item
-        android:id="@+id/expand"
-        android:title="@string/expand_title"
-        android:orderInCategory="1"
-        android:icon="@mipmap/ic_chevron_double_down"
-        app:showAsAction="ifRoom"/>
-
-    <item
         android:id="@+id/fave"
         android:title="@string/fave_title"
         android:orderInCategory="2"

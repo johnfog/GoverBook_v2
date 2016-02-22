@@ -108,10 +108,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
-
-
-
     private void ListOrg(SQLiteDatabase database) {
         String[][] list;
         ArrayList<String> orgTypes = new ArrayList<String>();

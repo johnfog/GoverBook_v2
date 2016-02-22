@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -26,6 +27,7 @@ public class  ContactDetailActivity extends AppCompatActivity implements View.On
     DBHelper dbHelper;
     boolean saved;
     MenuItem faveItem;
+    NavigationView navigationView;
 
 
     @Override
@@ -54,6 +56,7 @@ public class  ContactDetailActivity extends AppCompatActivity implements View.On
         TextView tvDetailFio = (TextView) findViewById(R.id.tvDetailFio);
         tvDetailFio.setText(userContact.FIO);
         initToolbar();
+        initNavigationView();
 
         if (tvPhone.getText().length()>0) {
             btnDial.setOnClickListener(this);
@@ -72,6 +75,23 @@ public class  ContactDetailActivity extends AppCompatActivity implements View.On
 
     }
 
+    private void initNavigationView() {
+        navigationView = (NavigationView) findViewById(R.id.navigation);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.nav_settings:
+                        intent = new Intent(ContactDetailActivity.this,SettingsActivity.class);
+                        startActivity(intent);
+                        break;
+                }
+
+                return false;
+            }
+        });
+    }
+
 
     private String parseNumber(String text) {
         String num=text.replaceAll("-", "");
@@ -81,7 +101,7 @@ public class  ContactDetailActivity extends AppCompatActivity implements View.On
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.toolbar_detail_menu, menu);
+        getMenuInflater().inflate(R.menu.toolbar_detail_contact_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
