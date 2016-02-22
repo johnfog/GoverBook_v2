@@ -3,6 +3,9 @@ package com.informix.goverbook;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -26,7 +29,7 @@ public class OrgResultsActivity extends AppCompatActivity {
     int groupCount;
     String clickedOrgName;
     boolean saved;
-    private Menu menu;
+    MenuItem faveItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +44,19 @@ public class OrgResultsActivity extends AppCompatActivity {
         intent = getIntent();
         clickedOrgName = intent.getStringExtra("orgName");
         orgName.setText(clickedOrgName);
-        initToolbar();
+
+        toolbar = (Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+
+            }
+        });
 
 
         org=dbHelper.searchOrgByName(clickedOrgName, database);
@@ -70,21 +85,36 @@ public class OrgResultsActivity extends AppCompatActivity {
             }
         });
 
+
+        initToolbar();
+        supportInvalidateOptionsMenu();
+        invalidateOptionsMenu();
+        ActivityCompat.invalidateOptionsMenu(this);
+
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
     }
 
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        this.menu=menu;
+        getMenuInflater().inflate(R.menu.toolbar_detail_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
-    private void initToolbar() {
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.inflateMenu(R.menu.toolbar_detail_menu);
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        this.faveItem= menu.findItem(R.id.fave);
+
         saved=dbHelper.getItemSaved(clickedOrgName,dbHelper);
 
+        if (saved){
+            faveItem.setIcon(R.mipmap.ic_star);
+        }
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+
+    private void initToolbar() {
+        saved=dbHelper.getItemSaved(clickedOrgName,dbHelper);
 
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
@@ -116,16 +146,20 @@ public class OrgResultsActivity extends AppCompatActivity {
     private void addFave() {
         Toast toast;
 
-        dbHelper.saveFave(clickedOrgName,DBHelper.TYPE_ORG,0,dbHelper);
-
         if (saved) {
             toast = Toast.makeText(getApplicationContext(),
-                    "Организация была добавлена в Избранные", Toast.LENGTH_SHORT);
-        }
-            else
-        {
+                    "Контакт удален из избранных", Toast.LENGTH_SHORT);
+            faveItem.setIcon(R.mipmap.ic_star_outline);
+            dbHelper.deleteFaveOrg(clickedOrgName,dbHelper);
+            saved=false;
+
+        }else {
             toast = Toast.makeText(getApplicationContext(),
-                    "Организация уже в Избранных", Toast.LENGTH_SHORT);
+                    "Контакт был добавлен в избранные", Toast.LENGTH_SHORT);
+            dbHelper.saveFave(clickedOrgName, DBHelper.TYPE_ORG, 0, dbHelper);
+            faveItem.setIcon(R.mipmap.ic_star);
+            saved=true;
+
         }
 
         toast.show();
@@ -162,8 +196,13 @@ public class OrgResultsActivity extends AppCompatActivity {
     }
 
     private void setupMenu() {
-        intent = new Intent(OrgResultsActivity.this, SettingsActivity.class);
-        startActivityForResult(intent, 1);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout_org_result);
+
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            drawer.openDrawer(GravityCompat.START);
+        }
     }
 
     // Метод сворачиваня клавиатуры

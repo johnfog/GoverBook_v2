@@ -4,11 +4,11 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,33 +29,23 @@ public class  ContactDetailActivity extends AppCompatActivity implements View.On
 
 
     @Override
-    public void supportInvalidateOptionsMenu() {
-        Log.d("MyLog", "Menu");
-        super.supportInvalidateOptionsMenu();
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.toolbar_detail_menu, menu);
-        Log.d("MyLog", "Menu");
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        Log.d("MyLog","Menu");
         this.faveItem= menu.findItem(R.id.fave);
-        return super.onPrepareOptionsMenu(menu);
-    }
-
-    protected void ChangeIcon() {
 
         saved=dbHelper.getItemSaved(userContact.FIO,dbHelper);
 
         if (saved){
             faveItem.setIcon(R.mipmap.ic_star);
         }
+        return super.onPrepareOptionsMenu(menu);
     }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -63,6 +53,20 @@ public class  ContactDetailActivity extends AppCompatActivity implements View.On
         setTheme(LAYOUT);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_detail);
+
+        toolbar = (Toolbar)findViewById(R.id.toolbar);
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+
+            }
+        });
 
         dbHelper = new DBHelper(this);
         tvPhone = (TextView) findViewById(R.id.tvPhone);
@@ -83,7 +87,6 @@ public class  ContactDetailActivity extends AppCompatActivity implements View.On
         tvDetailFio.setText(userContact.FIO);
         initToolbar();
 
-
         if (tvPhone.getText().length()>0) {
             btnDial.setOnClickListener(this);
         }
@@ -96,12 +99,13 @@ public class  ContactDetailActivity extends AppCompatActivity implements View.On
         else
             btnEmail.setEnabled(false);
 
-        ActivityCompat.invalidateOptionsMenu(this);
-        invalidateOptionsMenu();
+//        ActivityCompat.invalidateOptionsMenu(this);
+//        invalidateOptionsMenu();
         supportInvalidateOptionsMenu();
 
 
     }
+
 
     private String parseNumber(String text) {
         String num=text.replaceAll("-", "");
@@ -115,15 +119,7 @@ public class  ContactDetailActivity extends AppCompatActivity implements View.On
     }
 
     private void initToolbar() {
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                return false;
-            }
-        });
-        toolbar.inflateMenu(R.menu.toolbar_detail_menu);
 
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
@@ -134,8 +130,7 @@ public class  ContactDetailActivity extends AppCompatActivity implements View.On
                         setupMenu();
                         break;
                     case R.id.fave:
-                        //addFave();
-                        ChangeIcon();
+                        addFave();
                         break;
 
                 }
@@ -145,8 +140,14 @@ public class  ContactDetailActivity extends AppCompatActivity implements View.On
     }
 
     private void setupMenu() {
-        intent = new Intent(ContactDetailActivity.this, SettingsActivity.class);
-        startActivityForResult(intent, 1);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout_contact_detail);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            drawer.openDrawer(GravityCompat.START);
+        }
+
+
     }
 
 
@@ -154,15 +155,22 @@ public class  ContactDetailActivity extends AppCompatActivity implements View.On
 
     {
         Toast toast;
-        dbHelper.saveFave(userContact.FIO, DBHelper.TYPE_WORKER,userContact.id, dbHelper);
 
         if (saved) {
             toast = Toast.makeText(getApplicationContext(),
-                    "Контакт был добавлен в Избранные", Toast.LENGTH_SHORT);
+                    "Контакт удален из избранных", Toast.LENGTH_SHORT);
+                    faveItem.setIcon(R.mipmap.ic_star_outline);
+                    dbHelper.deleteFaveContact(userContact.id, dbHelper);
+                    saved=false;
 
-        }else
+        }else {
             toast = Toast.makeText(getApplicationContext(),
-                    "Контакт уже в Избранных", Toast.LENGTH_SHORT);
+                    "Контакт был добавлен в избранные", Toast.LENGTH_SHORT);
+            dbHelper.saveFave(userContact.FIO, DBHelper.TYPE_WORKER, userContact.id, dbHelper);
+            faveItem.setIcon(R.mipmap.ic_star);
+            saved=true;
+
+        }
 
         toast.show();
     }

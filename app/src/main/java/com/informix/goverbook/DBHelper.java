@@ -445,6 +445,20 @@ public class DBHelper extends SQLiteOpenHelper {
 
     }
 
+    public void deleteFaveContact(int id, DBHelper dbHelper){
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+
+        database.delete(DBHelper.TABLE_FAVE, DBHelper.KEY_IDUSER + " = " + id, null);
+
+    }
+
+    public void deleteFaveOrg(String name, DBHelper dbHelper){
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+        database.delete(DBHelper.TABLE_FAVE, DBHelper.KEY_SNAME + " = \"" + name+"\"", null);
+
+    }
+
+
 
     public String[][] ListFave(SQLiteDatabase database){
         String querry;
