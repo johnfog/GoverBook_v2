@@ -592,7 +592,10 @@ public class DBHelper extends SQLiteOpenHelper {
         String[][] result;
         // Строка запроса в sql для ФИО
 
-        querry = "SELECT * FROM "+ DBHelper.TABLE_ORG +" WHERE "+ DBHelper.KEY_TYPEID +" = "+ typeId+ " AND areaid="+ area+" ORDER BY s_org.company asc";
+        if (typeId.equals("ALLID"))
+            querry = "SELECT * FROM "+ DBHelper.TABLE_ORG +" WHERE areaid="+ area+" ORDER BY s_org.company asc";
+        else
+            querry = "SELECT * FROM "+ DBHelper.TABLE_ORG +" WHERE "+ DBHelper.KEY_TYPEID +" = "+ typeId+ " AND areaid="+ area+" ORDER BY s_org.company asc";
 
         Cursor cursor = database.rawQuery(querry, null);
         int IDIndex = cursor.getColumnIndex(DBHelper.KEY_ID);

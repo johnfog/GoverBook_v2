@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
 
         String[][] orgListByType;
 
-        orgListByType = dbHelper.ListOrgOnType("6", areaIds[selectedArea], database);
+        orgListByType = dbHelper.ListOrgOnType("ALLID", areaIds[selectedArea], database);
 
         ArrayList<String> orgInArea= new ArrayList<String>();
         orgInArea.addAll(Arrays.asList(orgListByType[0]));
