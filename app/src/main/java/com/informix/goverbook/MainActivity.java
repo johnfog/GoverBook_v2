@@ -2,7 +2,9 @@ package com.informix.goverbook;
 
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -22,9 +24,11 @@ import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.informix.goverbook.adapters.ExpListAdapter;
@@ -32,7 +36,10 @@ import com.informix.goverbook.adapters.FaveListAdapter;
 import com.informix.goverbook.adapters.TabsAdapter;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -51,33 +58,98 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Integer> orgId = new ArrayList();
     ListView searchFioResult;
     private NavigationView navigationView;
+    private Spinner spinner;
+    String[] areaIds;
+    List<String> areaNames;
+    SharedPreferences mSettings;
+    private int selectedArea;
 
 
-    private static final String REAL_AREA = "REAL_AREA";
-    public static final String YOUR_AREA_POSITION = "YOUR_AREA_POSITION";
-    private static final String YOUR_AREA_ID = "YOUR_AREA_ID";
-
+    public static final String APP_PREFERENCES = "goverbook";
+    private static final String SELECTED_AREA = "SELECTED_AREA";
 
 
     public void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppDefault);
         super.onCreate(savedInstanceState);
         setContentView(LAYOUT);
+
+        //Находим элементы
+        dbHelper = new DBHelper(this);
+        database = dbHelper.getReadableDatabase();
+        etSearch = (EditText) findViewById(R.id.searchString);
+        spinner = (Spinner) findViewById(R.id.areaSpinner);
+        viewPager = (ViewPager) findViewById(R.id.viewPager);
+
+        //Инициилизируем
+        mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+
         initTabs();
         initNavigationView();
         initToolbar();
         initDb();
+        initSpinner();
 
-        dbHelper = new DBHelper(this);
-        database = dbHelper.getReadableDatabase();
-        etSearch = (EditText) findViewById(R.id.searchString);
-        viewPager = (ViewPager) findViewById(R.id.viewPager);
 
         tab1Actions();
         viewPager.setCurrentItem(0);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
 
+    private void initSpinner() {
+        String[][] list;
+        String areaInSetting;
+
+        list=dbHelper.areaGetter(database);
+        areaNames = Arrays.asList(list[0]);
+        areaIds=list[1];
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, areaNames);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        areaInSetting=mSettings.getString(SELECTED_AREA,"г.Якутск");
+        selectedArea=areaNames.indexOf(areaInSetting);
+        spinner.setSelection(selectedArea);
+
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                SharedPreferences.Editor editor = mSettings.edit();
+                editor.putString(SELECTED_AREA, String.valueOf(parent.getItemAtPosition(position)));
+                editor.apply();
+                selectedArea = position;
+
+                if (viewPager.getCurrentItem()==1) {
+                    displayOrgOnArea();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+    }
+
+    private void displayOrgOnArea() {
+
+        String[][] orgListByType;
+
+        orgListByType = dbHelper.ListOrgOnType("6",areaIds[selectedArea], database);
+
+        ArrayList<String> orgInArea= new ArrayList<String>();
+        orgInArea.addAll(Arrays.asList(orgListByType[0]));
+
+        ExpListAdapter adapterForOrgs = new ExpListAdapter(getApplicationContext(),orgInArea,true);
+        searchResultOrg.setAdapter(adapterForOrgs);
+
+
+
+
+}
 
 
     // Метод сворачиваня клавиатуры
@@ -193,7 +265,7 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<Integer> orgNameId = new ArrayList<Integer>();
 
         ExpandableListView listView = (ExpandableListView) findViewById(R.id.searchOrgResult);
-        list = dbHelper.SearchOrg(etSearch.getText().toString(),database);
+        list = dbHelper.SearchOrg(etSearch.getText().toString(),areaIds[selectedArea],database);
 
         orgName.clear();
         for (int i = 0; i < (list[0].length); i++) {
@@ -288,7 +360,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void startSearchFio(){
-        userContact = dbHelper.searchByFio(etSearch.getText().toString(), database);
+        userContact = dbHelper.searchByFio(etSearch.getText().toString(),areaIds[selectedArea], database);
+        Log.d("MyLog",areaIds[selectedArea]);
         ItemMenuUsers itemMenuUsers = new ItemMenuUsers(userContact);
         searchFioResult = (ListView) findViewById(R.id.searchFioResult);
         itemMenuUsers.DrawMenu(searchFioResult);
@@ -334,7 +407,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         for (int i=0;i< (orgTypesId.size());i++) {
-            orgListByType = dbHelper.ListOrgOnId(String.valueOf(orgTypesId.get(i)),database);
+            orgListByType = dbHelper.ListOrgOnType(String.valueOf(orgTypesId.get(i)),"35", database);
             inTypeOrgNames= new ArrayList<String>();
 
             for (int k = 0; k < (orgListByType[0].length); k++) {

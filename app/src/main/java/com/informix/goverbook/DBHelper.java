@@ -166,7 +166,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
 
-    public ArrayList<UserContact> searchByFio(String fioString,SQLiteDatabase database) {
+    public ArrayList<UserContact> searchByFio(String fioString,String area,SQLiteDatabase database) {
 
         String querry;
         ArrayList<UserContact> result= new ArrayList<UserContact>();
@@ -175,7 +175,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
         querry = "SELECT s_users.id, s_users.fio, s_users.status, s_users.contacts, s_users.email, s_users.departid, s_users.orgid, s_depart.department, s_org.company, s_org.adres, s_org.descr, s_users.sorting, s_users.phone FROM s_users LEFT JOIN s_org ON s_users.orgid=s_org.id LEFT JOIN s_depart ON s_users.departid=s_depart.id WHERE "+ DBHelper.KEY_FIO +" like ?";
-        //querry = querry+ " and areaid=" + getRealArea()+" ORDER BY fio asc";
+        querry = querry+ " and areaid=" + area+" ORDER BY fio asc";
 
 
         // Поиск всех вхождений базы данных удовлетворяющих условию в cursor
@@ -586,13 +586,13 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
 
-    public String[][] ListOrgOnId(String typeId, SQLiteDatabase database) {
+    public String[][] ListOrgOnType(String typeId, String area, SQLiteDatabase database) {
 
         String querry;
         String[][] result;
         // Строка запроса в sql для ФИО
 
-        querry = "SELECT * FROM "+ DBHelper.TABLE_ORG +" WHERE "+ DBHelper.KEY_TYPEID +" = "+ typeId+ " ORDER BY s_org.company asc";
+        querry = "SELECT * FROM "+ DBHelper.TABLE_ORG +" WHERE "+ DBHelper.KEY_TYPEID +" = "+ typeId+ " AND areaid="+ area+" ORDER BY s_org.company asc";
 
         Cursor cursor = database.rawQuery(querry, null);
         int IDIndex = cursor.getColumnIndex(DBHelper.KEY_ID);
@@ -619,7 +619,7 @@ public class DBHelper extends SQLiteOpenHelper {
             cursor.close();
         } else {
             result = new String[2][1];
-            result[0][0] = "Иные";
+            result[0][0] = "Ничего не найденно";
             result[1][0] = "6";
         }
         cursor.close();
@@ -628,13 +628,15 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
 
-    public String[][] SearchOrg(String orgName, SQLiteDatabase database) {
+    public String[][] SearchOrg(String orgName, String area,SQLiteDatabase database) {
 
         String querry;
         String[][] result;
         // Строка запроса в sql для ФИО
 
         querry = "SELECT * FROM "+ DBHelper.TABLE_ORG +" WHERE "+ DBHelper.TABLE_ORG+"." + DBHelper.KEY_LOWERCOMPANY + " like ?";
+        querry = querry+ " and areaid=" + area+" ORDER BY COMPANY asc";
+
         orgName=orgName.toLowerCase();
 
         Cursor cursor = database.rawQuery(querry, new String[]{"%" + orgName + "%"});

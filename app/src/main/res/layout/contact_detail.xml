@@ -83,7 +83,7 @@
         android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/linearLayout6"
+        android:id="@+id/linearLayoutContacts"
         android:padding="10dp">
 
         <LinearLayout

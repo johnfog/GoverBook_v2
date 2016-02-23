@@ -26,8 +26,22 @@ android:background="@drawable/shape_search_line">
     android:textSize="@dimen/edit_text_size"
     android:autoText="true"
     app:backgroundTint="#00000000"
-
    />
+
+    <android.support.v7.widget.AppCompatSpinner
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/areaSpinner"
+        android:inputType="text"
+        android:imeOptions="actionDone"
+        android:hint="@string/navbar_menu_title"
+        android:layout_weight="1"
+        android:textIsSelectable="false"
+        android:textColor="@color/textColor"
+        android:textSize="@dimen/edit_text_size"
+        android:autoText="true"
+        app:backgroundTint="#00000000"
+        />
 
     </android.support.v7.widget.LinearLayoutCompat>
     />
