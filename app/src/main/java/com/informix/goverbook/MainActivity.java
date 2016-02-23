@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, areaNames);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
-        areaInSetting=mSettings.getString(SELECTED_AREA,"г.Якутск");
+        areaInSetting=mSettings.getString(SELECTED_AREA, "г.Якутск");
         selectedArea=areaNames.indexOf(areaInSetting);
         spinner.setSelection(selectedArea);
 
@@ -120,13 +120,11 @@ public class MainActivity extends AppCompatActivity {
                 editor.apply();
                 selectedArea = position;
 
-                if (viewPager.getCurrentItem()==1) {
-                    Log.d("MyLog",areaIds[selectedArea]);
-                    if (areaIds[selectedArea].equals("35")){
+                if (viewPager.getCurrentItem() == 1) {
+                    if (areaIds[selectedArea].equals("35")) {
                         ListOrgMain(database);
-                    }
-                        else
-                    displayOrgOnArea();
+                    } else
+                        displayOrgOnArea();
                 }
             }
 
@@ -143,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
 
         String[][] orgListByType;
 
-        orgListByType = dbHelper.ListOrgOnType("6",areaIds[selectedArea], database);
+        orgListByType = dbHelper.ListOrgOnType("6", areaIds[selectedArea], database);
 
         ArrayList<String> orgInArea= new ArrayList<String>();
         orgInArea.addAll(Arrays.asList(orgListByType[0]));
@@ -151,23 +149,33 @@ public class MainActivity extends AppCompatActivity {
         adapterForOrgs = new ExpListAdapter(getApplicationContext(),orgInArea,true);
         searchResultOrg.setAdapter(adapterForOrgs);
 
-        searchResultOrg.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
-            @Override
-            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-
-                if (adapterForOrgs.isOrg(groupPosition)) {
-
-                    String clickedOrgName = adapterForOrgs.getGroup(groupPosition).toString();
-                    intent = new Intent(MainActivity.this, OrgResultsActivity.class);
-                    intent.putExtra("orgName", clickedOrgName);
-                    startActivity(intent);
+        if (searchResultOrg.getItemAtPosition(0).toString().equals("Ничего не найденно"))
+        {
+            searchResultOrg.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+                @Override
+                public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+                    return false;
                 }
+            });
+        }
+        else {
+            searchResultOrg.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+                @Override
+                public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
 
-                return false;
-            }
-        });
+                    if (adapterForOrgs.isOrg(groupPosition)) {
 
+                        String clickedOrgName = adapterForOrgs.getGroup(groupPosition).toString();
+                        intent = new Intent(MainActivity.this, OrgResultsActivity.class);
+                        intent.putExtra("orgName", clickedOrgName);
+                        startActivity(intent);
+                    }
 
+                    return false;
+                }
+            });
+
+        }
 
 }
 
@@ -296,6 +304,17 @@ public class MainActivity extends AppCompatActivity {
         adapterForOrgs = new ExpListAdapter(getApplicationContext(),orgName,true);
         listView.setAdapter(adapterForOrgs);
 
+        if (listView.getItemAtPosition(0).toString().equals("Ничего не найденно"))
+        {
+            searchResultOrg.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+                @Override
+                public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+                    return false;
+                }
+            });
+
+        }
+
     }
 
     private void setupMenu() {
@@ -355,8 +374,7 @@ public class MainActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
                 if (s.length() > 2) {
                     startSearchOrg();
-                }
-                else ListOrgMain(database);
+                } else ListOrgMain(database);
             }
         });
 
@@ -381,7 +399,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void startSearchFio(){
         userContact = dbHelper.searchByFio(etSearch.getText().toString(),areaIds[selectedArea], database);
-        Log.d("MyLog",areaIds[selectedArea]);
         ItemMenuUsers itemMenuUsers = new ItemMenuUsers(userContact);
         searchFioResult = (ListView) findViewById(R.id.searchFioResult);
         itemMenuUsers.DrawMenu(searchFioResult);
@@ -446,22 +463,33 @@ public class MainActivity extends AppCompatActivity {
         searchResultOrg.setGroupIndicator(getResources().getDrawable(R.drawable.userliststate));
 
 
-        searchResultOrg.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
-            @Override
-            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-
-                if (adapterForOrgs.isOrg(groupPosition)) {
-
-                    String clickedOrgName = adapterForOrgs.getGroup(groupPosition).toString();
-                    intent = new Intent(MainActivity.this, OrgResultsActivity.class);
-                    intent.putExtra("orgName", clickedOrgName);
-                    startActivity(intent);
+        if (searchResultOrg.getItemAtPosition(0).toString().equals("Ничего не найденно"))
+        {
+            searchResultOrg.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+                @Override
+                public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+                    return false;
                 }
+            });
 
-                return false;
-            }
-        });
+        }
+        else {
+            searchResultOrg.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+                @Override
+                public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
 
+                    if (adapterForOrgs.isOrg(groupPosition)) {
+
+                        String clickedOrgName = adapterForOrgs.getGroup(groupPosition).toString();
+                        intent = new Intent(MainActivity.this, OrgResultsActivity.class);
+                        intent.putExtra("orgName", clickedOrgName);
+                        startActivity(intent);
+                    }
+
+                    return false;
+                }
+            });
+        }
 
         etSearch.setOnEditorActionListener(new EditText.OnEditorActionListener() {
 
