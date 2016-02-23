@@ -121,6 +121,11 @@ public class MainActivity extends AppCompatActivity {
                 selectedArea = position;
 
                 if (viewPager.getCurrentItem()==1) {
+                    Log.d("MyLog",areaIds[selectedArea]);
+                    if (areaIds[selectedArea].equals("35")){
+                        ListOrgMain(database);
+                    }
+                        else
                     displayOrgOnArea();
                 }
             }
@@ -143,9 +148,24 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<String> orgInArea= new ArrayList<String>();
         orgInArea.addAll(Arrays.asList(orgListByType[0]));
 
-        ExpListAdapter adapterForOrgs = new ExpListAdapter(getApplicationContext(),orgInArea,true);
+        adapterForOrgs = new ExpListAdapter(getApplicationContext(),orgInArea,true);
         searchResultOrg.setAdapter(adapterForOrgs);
 
+        searchResultOrg.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+
+                if (adapterForOrgs.isOrg(groupPosition)) {
+
+                    String clickedOrgName = adapterForOrgs.getGroup(groupPosition).toString();
+                    intent = new Intent(MainActivity.this, OrgResultsActivity.class);
+                    intent.putExtra("orgName", clickedOrgName);
+                    startActivity(intent);
+                }
+
+                return false;
+            }
+        });
 
 
 
