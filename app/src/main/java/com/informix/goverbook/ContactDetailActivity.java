@@ -55,19 +55,28 @@ public class  ContactDetailActivity extends AppCompatActivity implements View.On
         tvStatus.setText(userContact.getSTATUS());
         tvEmail.setText(userContact.getEMAIL());
 
+        //parse Phone Number
         String s = userContact.getPHONE();
-        s = s.replaceAll(" \\(","(");
-        s = s.replaceAll("\\) ", ")");
-        String[] str = s.split(" ",2);
-        str[0] = str[0].replaceAll("(?!-)(?!\\+)(?![()])\\p{P}", "");
-        tvPhone.setText(str[0]);
-        if (str.length > 1) {
-            tvPhoneDop.setText(str[1]);
-        }
-
-        if(tvPhoneDop.getText() != null && tvPhoneDop.getText().length() != 0 && !tvPhoneDop.getText().equals(""))
+        if (s.toCharArray()[0] == 'ф' || s.toCharArray()[0] == 'Ф')
         {
+            tvPhone.setText("");
+            findViewById(R.id.linearLayout7).setVisibility(View.GONE);
             findViewById(R.id.linearLayout7Dop).setVisibility(View.VISIBLE);
+            tvPhoneDop.setText(s);
+        }
+        else {
+            s = s.replaceAll(" \\(", "(");
+            s = s.replaceAll("\\) ", ")");
+            String[] str = s.split(" ", 2);
+            str[0] = str[0].replaceAll("(?!-)(?!\\+)(?![()])\\p{P}", "");
+            tvPhone.setText(str[0]);
+            if (str.length > 1) {
+                tvPhoneDop.setText(str[1]);
+            }
+
+            if (tvPhoneDop.getText() != null && tvPhoneDop.getText().length() != 0 && !tvPhoneDop.getText().equals("")) {
+                findViewById(R.id.linearLayout7Dop).setVisibility(View.VISIBLE);
+            }
         }
 
         TextView tvDetailFio = (TextView) findViewById(R.id.tvDetailFio);
