@@ -10,6 +10,7 @@
 android:orientation="horizontal"
 android:layout_width="fill_parent"
 android:layout_height="wrap_content"
+android:weightSum="100"
 android:id="@+id/linearLayout2"
 android:background="@drawable/shape_search_line">
 
@@ -19,8 +20,8 @@ android:background="@drawable/shape_search_line">
     android:id="@+id/searchString"
     android:inputType="text"
     android:imeOptions="actionDone"
-    android:hint="@string/navbar_menu_title"
-    android:layout_weight="1"
+    android:hint="@string/search_title"
+    android:layout_weight="65"
     android:textIsSelectable="false"
     android:textColor="@color/textColor"
     android:textSize="@dimen/edit_text_size"
@@ -32,14 +33,9 @@ android:background="@drawable/shape_search_line">
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:id="@+id/areaSpinner"
-        android:inputType="text"
-        android:imeOptions="actionDone"
-        android:hint="@string/navbar_menu_title"
-        android:layout_weight="1"
-        android:textIsSelectable="false"
+        android:layout_weight="35"
         android:textColor="@color/textColor"
         android:textSize="@dimen/edit_text_size"
-        android:autoText="true"
         app:backgroundTint="#00000000"
         />
 

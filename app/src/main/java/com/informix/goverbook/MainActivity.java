@@ -206,20 +206,14 @@ public class MainActivity extends AppCompatActivity {
     private void initToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+        toolbar.setNavigationIcon(R.mipmap.ic_menu_w);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.navbar_menu:
+            public void onClick(View v) {
                         setupMenu();
-                        break;
-
-                }
-                return false;
 
             }
         });
-        toolbar.inflateMenu(R.menu.toolbar_menu);
     }
 
     private void initNavigationView() {
