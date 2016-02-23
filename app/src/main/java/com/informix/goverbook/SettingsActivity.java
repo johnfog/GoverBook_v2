@@ -155,9 +155,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                     contentValues.put(DBHelper.KEY_FIO, modFioString(jsonuser.getString("FIO")));
                     contentValues.put(DBHelper.KEY_STATUS, jsonuser.getString("STATUS"));
                     contentValues.put(DBHelper.KEY_CONTACTS, jsonuser.getString("CONTACTS"));
-                    if ((jsonuser.getString("CONTACTS")) != "null") {
-                        contentValues.put(DBHelper.KEY_CONTACTS, jsonuser.getInt("CONTACTS"));
-                    } else contentValues.put(DBHelper.KEY_CONTACTS, "");
                     contentValues.put(DBHelper.KEY_PHONE, jsonuser.getString("PHONE"));
                     contentValues.put(DBHelper.KEY_EMAIL, jsonuser.getString("EMAIL"));
                     if ((jsonuser.getString("DEPARTID")) != "null") {
