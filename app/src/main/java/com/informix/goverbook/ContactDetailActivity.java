@@ -55,13 +55,22 @@ public class  ContactDetailActivity extends AppCompatActivity implements View.On
         tvStatus.setText(userContact.getSTATUS());
         tvEmail.setText(userContact.getEMAIL());
 
+        String s = userContact.getEMAIL();
+        if (s.equals("")){
+            findViewById(R.id.linearLayoutEMAIL).setVisibility(View.GONE);
+        }
+
+
+
         //parse Phone Number
-        String s = userContact.getPHONE();
-        if (s.toCharArray()[0] == 'ф' || s.toCharArray()[0] == 'Ф')
+        s = userContact.getPHONE();
+
+        if (s.equals("") || s.toCharArray()[0] == 'ф' || s.toCharArray()[0] == 'Ф')
         {
             tvPhone.setText("");
-            findViewById(R.id.linearLayout7).setVisibility(View.GONE);
-            findViewById(R.id.linearLayout7Dop).setVisibility(View.VISIBLE);
+            findViewById(R.id.linearLayoutPhone).setVisibility(View.GONE);
+            if (!s.equals("")) {
+                findViewById(R.id.linearLayoutPhoneDop).setVisibility(View.VISIBLE);}
             tvPhoneDop.setText(s);
         }
         else {
@@ -75,7 +84,7 @@ public class  ContactDetailActivity extends AppCompatActivity implements View.On
             }
 
             if (tvPhoneDop.getText() != null && tvPhoneDop.getText().length() != 0 && !tvPhoneDop.getText().equals("")) {
-                findViewById(R.id.linearLayout7Dop).setVisibility(View.VISIBLE);
+                findViewById(R.id.linearLayoutPhoneDop).setVisibility(View.VISIBLE);
             }
         }
 

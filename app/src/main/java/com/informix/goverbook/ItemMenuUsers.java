@@ -30,13 +30,13 @@ public class ItemMenuUsers {
         }
 
 
-        SimpleAdapter adapter1 = new SimpleAdapter(searchResult.getContext(), data,
+        SimpleAdapter adapter = new SimpleAdapter(searchResult.getContext(), data,
                 android.R.layout.simple_list_item_2,
                 new String[] {"fio", "org"},
                 new int[] {android.R.id.text1,
                         android.R.id.text2});
 
-        searchResult.setAdapter(adapter1);
+        searchResult.setAdapter(adapter);
 
 
 

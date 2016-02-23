@@ -91,6 +91,7 @@ public class UserContact {
     }
 
     public String getPHONE() {
+        if (PHONE==null) PHONE="";
         return PHONE;
     }
 
