@@ -35,6 +35,7 @@ import com.informix.goverbook.adapters.ExpListAdapter;
 import com.informix.goverbook.adapters.FaveListAdapter;
 import com.informix.goverbook.adapters.TabsAdapter;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -187,11 +188,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
+        super.onResume();
         if (viewPager.getCurrentItem()==2)
         {
             tab3Actions();
         }
-        super.onResume();
+
     }
 
 
@@ -210,7 +212,7 @@ public class MainActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                        setupMenu();
+                setupMenu();
 
             }
         });
@@ -227,6 +229,8 @@ public class MainActivity extends AppCompatActivity {
                         intent = new Intent(MainActivity.this, SettingsActivity.class);
                         startActivity(intent);
                         break;
+                    case R.id.nav_fave:
+                        break;
                 }
 
                 return false;
@@ -235,6 +239,9 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+
+
 
     private void initTabs() {
         viewPager = (ViewPager) findViewById(R.id.viewPager);
@@ -516,25 +523,36 @@ public class MainActivity extends AppCompatActivity {
         FaveListAdapter faveListAdapter = new FaveListAdapter(this,favelist[0],favelist[1]);
         listView.setAdapter(faveListAdapter);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (favelist[0][position].equals(DBHelper.TYPE_ORG)) {
-                    String clickedOrgName = parent.getItemAtPosition(position).toString();
-                    intent = new Intent(MainActivity.this, OrgResultsActivity.class);
-                    intent.putExtra("orgName", clickedOrgName);
-                    startActivity(intent);
-                }
+        if (listView.getItemAtPosition(0).toString().equals("Список пуст"))
+        {
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                if (favelist[0][position].equals(DBHelper.TYPE_WORKER)) {
-                    int clickedId = Integer.parseInt(favelist[2][position]);
-                    intent = new Intent(MainActivity.this, ContactDetailActivity.class);
-                    intent.putExtra("userid", clickedId);
-                    startActivity(intent);
                 }
+            });
+        }
+        else {
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    if (favelist[0][position].equals(DBHelper.TYPE_ORG)) {
+                        String clickedOrgName = parent.getItemAtPosition(position).toString();
+                        intent = new Intent(MainActivity.this, OrgResultsActivity.class);
+                        intent.putExtra("orgName", clickedOrgName);
+                        startActivity(intent);
+                    }
 
-            }
-        });
+                    if (favelist[0][position].equals(DBHelper.TYPE_WORKER)) {
+                        int clickedId = Integer.parseInt(favelist[2][position]);
+                        intent = new Intent(MainActivity.this, ContactDetailActivity.class);
+                        intent.putExtra("userid", clickedId);
+                        startActivity(intent);
+                    }
+
+                }
+            });
+        }
 
     }
 

@@ -53,6 +53,7 @@ public class  ContactDetailActivity extends AppCompatActivity implements View.On
         userContact =dbHelper.searchUserById(intent.getIntExtra("userid", 0), database);
         tvIpPhone.setText(userContact.CONTACTS);
 
+
         if (userContact.CONTACTS.equals("-") || userContact.CONTACTS.equals("")) {findViewById(R.id.linearLayoutContacts).setVisibility(View.GONE);}
         else
         {

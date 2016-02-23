@@ -99,7 +99,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     }
 
 
-    private class ParseTask extends AsyncTask<String, Integer, String> {
+    public class ParseTask extends AsyncTask<String, Integer, String> {
 
         String resultJson;
         private ProgressDialog mPDialog;
