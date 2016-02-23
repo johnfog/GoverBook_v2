@@ -14,67 +14,86 @@ import com.informix.goverbook.R;import java.util.ArrayList;
  */
 public class ExpListAdapter extends BaseExpandableListAdapter {
 
-    private ArrayList<ArrayList<String>> mGroups;
-    private ArrayList<ArrayList<String>> mGroupsDescription;
-    private ArrayList<String> menuList;
+    private ArrayList<ArrayList<String>> childName;
+    private ArrayList<ArrayList<String>> childDescription;
+    private ArrayList<String> groupName;
+    private ArrayList<Boolean> groupIsOrg=new ArrayList<Boolean>();
     private Context mContext;
-    public Boolean Type;
 
-
-    public ExpListAdapter(Context applicationContext, ArrayList<ArrayList<String>> subMenu, ArrayList<ArrayList<String>> subMenuDescription, ArrayList<String> menu,Boolean type) {
+    public ExpListAdapter(Context applicationContext, ArrayList<String> groupNames, ArrayList<ArrayList<String>> childNames, ArrayList<ArrayList<String>> childDescription,Boolean groupIsOrg) {
         mContext = applicationContext;
-        mGroups = subMenu;
-        menuList = menu;
-        mGroupsDescription = subMenuDescription;
-        Type = type;
+        this.childName = childNames;
+        this.groupName = groupNames;
+        this.childDescription = childDescription;
+        for (int i=0;i<groupNames.size();i++)
+        this.groupIsOrg.add(groupIsOrg);
 
     }
 
-    public ExpListAdapter(Context applicationContext, ArrayList<ArrayList<String>> subMenu, ArrayList<String> menu,Boolean type) {
+    public ExpListAdapter(Context applicationContext,ArrayList<String> groupNames, ArrayList<ArrayList<String>> childNames,Boolean groupIsOrg) {
         mContext = applicationContext;
-        mGroups = subMenu;
-        menuList = menu;
-        Type = type;
-        mGroupsDescription = new ArrayList<ArrayList<String>>();
-
+        this.childName = childNames;
+        this.groupName = groupNames;
+        childDescription = new ArrayList<ArrayList<String>>();
+        for (int i=0;i<groupNames.size();i++)
+            this.groupIsOrg.add(groupIsOrg);
     }
 
-
-    public ExpListAdapter(Context applicationContext,ArrayList<String> menu,Boolean type) {
+    public ExpListAdapter(Context applicationContext,ArrayList<String> groupNames,Boolean groupIsOrg) {
         ArrayList<ArrayList<String>> subs=new ArrayList<ArrayList<String>>();
         mContext = applicationContext;
 
-        menuList = menu;
-        for (int z=0;z<menu.size();z++){
+        groupName = groupNames;
+        for (int z=0;z<groupNames.size();z++){
         subs.add(new ArrayList<String>());
         }
-        mGroups = subs;
-        Type = type;
-        mGroupsDescription = new ArrayList<ArrayList<String>>();
+        childName = subs;
+        childDescription = new ArrayList<ArrayList<String>>();
+        for (int i=0;i<groupName.size();i++)
+            this.groupIsOrg.add(groupIsOrg);
 
     }
+
+
+
+    public ArrayList<String> getGroupName() {
+        return groupName;
+    }
+
+    public ArrayList<Boolean> getGroupIsOrg() {
+        return groupIsOrg;
+    }
+
+    public ArrayList<ArrayList<String>> getChildName() {
+        return childName;
+    }
+
+    public ArrayList<ArrayList<String>> getChildDescription() {
+        return childDescription;
+    }
+
 
 
     @Override
     public int getGroupCount() {
-        return menuList.size();
+        return groupName.size();
     }
 
     @Override
     public int getChildrenCount(int groupPosition) {
 
-            return mGroups.get(groupPosition).size();
+            return childName.get(groupPosition).size();
 
     }
 
     @Override
     public Object getGroup(int groupPosition) {
-        return menuList.get(groupPosition);
+        return groupName.get(groupPosition);
     }
 
     @Override
     public Object getChild(int groupPosition, int childPosition) {
-        return mGroups.get(groupPosition).get(childPosition);
+        return childName.get(groupPosition).get(childPosition);
     }
 
     @Override
@@ -93,12 +112,12 @@ public class ExpListAdapter extends BaseExpandableListAdapter {
     }
 
     public String getChildById(int groupPosition,int childPosition) {
-        return mGroups.get(groupPosition).get(childPosition);
+        return childName.get(groupPosition).get(childPosition);
 
     }
 
     public String getUserName(int groupPosition,int childPosition) {
-        return mGroupsDescription.get(groupPosition).get(childPosition);
+        return childDescription.get(groupPosition).get(childPosition);
 
     }
 
@@ -118,7 +137,7 @@ public class ExpListAdapter extends BaseExpandableListAdapter {
         }
 
         TextView textGroup = (TextView) convertView.findViewById(R.id.textGroup);
-        textGroup.setText(menuList.get(groupPosition));
+        textGroup.setText(groupName.get(groupPosition));
 
         return convertView;
     }
@@ -132,9 +151,9 @@ public class ExpListAdapter extends BaseExpandableListAdapter {
 
         TextView textChild = (TextView) convertView.findViewById(R.id.textChild);
         TextView textChildDescription = (TextView) convertView.findViewById(R.id.textChildDescription);
-        textChild.setText(mGroups.get(groupPosition).get(childPosition));
-        if (!mGroupsDescription.isEmpty())
-        textChildDescription.setText(mGroupsDescription.get(groupPosition).get(childPosition));
+        textChild.setText(childName.get(groupPosition).get(childPosition));
+        if (!childDescription.isEmpty())
+        textChildDescription.setText(childDescription.get(groupPosition).get(childPosition));
 
         return convertView;
     }
@@ -145,5 +164,17 @@ public class ExpListAdapter extends BaseExpandableListAdapter {
     }
 
 
+    public boolean isOrg(int position){
+        return groupIsOrg.get(position);
+    }
+
+
+    public void addAdapter(ExpListAdapter adapter){
+        groupName.addAll(adapter.getGroupName());
+        groupIsOrg.addAll(adapter.getGroupIsOrg());
+        childName.addAll(adapter.getChildName());
+        childDescription.addAll(adapter.getChildDescription());
+
+    }
 
 }

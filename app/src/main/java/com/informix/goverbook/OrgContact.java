@@ -45,7 +45,7 @@ public class OrgContact {
             formingUsersID.add(id);
         }
 
-        adapter = new ExpListAdapter(context, formingStatus,formingFIO,departs,false);
+        adapter = new ExpListAdapter(context,departs, formingStatus,formingFIO,false);
         listView.setAdapter(adapter);
 
     }

@@ -225,11 +225,38 @@
         </LinearLayout>
     </LinearLayout>
 
+
     <LinearLayout
         android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="30"
+        android:padding="10dp"
+        android:id="@+id/linearLayout7Dop"
+        android:visibility="gone">
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageView6"
+            android:src="@mipmap/detail_ip_phone"
+            android:paddingRight="15dp" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/tvPhoneDop"
+            android:textStyle="bold"
+            android:textColor="#333333" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Дополнительно"
+            android:id="@+id/textPhone1"
+            android:textSize="14dp" />
     </LinearLayout>
 
 

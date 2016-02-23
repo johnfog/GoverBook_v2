@@ -9,6 +9,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -52,8 +53,7 @@ public class OrgResultsActivity extends AppCompatActivity {
 
         groupCount=searchResult.getCount();
 
-
-        for (int i=0;i<searchResult.getCount();i++) {
+        for (int i=0;i<groupCount;i++) {
             if (searchResult.getItemAtPosition(i).equals("Отдел не указан")) {
                 searchResult.expandGroup(i);
             }

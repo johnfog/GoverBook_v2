@@ -78,6 +78,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 database.delete(DBHelper.TABLE_AREAS, null, null);
                 database.delete(DBHelper.TABLE_OTYPE, null, null);
                 database.delete(DBHelper.TABLE_DEPART, null, null);
+                database.delete(DBHelper.TABLE_ONMAIN, null, null);
 
 
                 //new Decompress().unzip(getCacheDir() + "/base.zip", getCacheDir() + "");
@@ -140,6 +141,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             }
             SQLiteDatabase database = dbHelper.getWritableDatabase();
             ContentValues contentValues = new ContentValues();
+            ContentValues contentValuesForOnMain = new ContentValues();
 
             database.beginTransaction();
             try {
@@ -183,21 +185,33 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                     JSONObject jsonorgs = orgsArray.getJSONObject(i);
                     contentValues.put(DBHelper.KEY_ID, jsonorgs.getInt("ID"));
                     //Удаляем амперсанды
-                    contentValues.put(DBHelper.KEY_COMPANY, jsonorgs.getString("COMPANY").replaceAll("&quot;","\'"));
+                    contentValues.put(DBHelper.KEY_COMPANY, jsonorgs.getString("COMPANY").replaceAll("&quot;", "\'"));
                     contentValues.put(DBHelper.KEY_LOWERCOMPANY, modOrgString(jsonorgs.getString("COMPANY")));
                     contentValues.put(DBHelper.KEY_ADRES, jsonorgs.getString("ADRES"));
                     if ((jsonorgs.getString("AREAID")) != "null") {
                         contentValues.put(DBHelper.KEY_AREAID, jsonorgs.getInt("AREAID"));
                     } else contentValues.put(DBHelper.KEY_AREAID, "");
-
                     contentValues.put(DBHelper.KEY_DESCR, jsonorgs.getString("DESCR"));
 
-                    if ((jsonorgs.getString("TYPEID")) != "null") {
-                        contentValues.put(DBHelper.KEY_TYPEID, jsonorgs.getInt("TYPEID"));
-                    } else contentValues.put(DBHelper.KEY_TYPEID, "");
-                    database.insert(DBHelper.TABLE_ORG, null, contentValues);
 
+                    if (((jsonorgs.getString("TYPEID")) == "null") || (jsonorgs.getString("TYPEID").equals("0"))) {
+                                contentValues.put(DBHelper.KEY_TYPEID, "6");
+                    }
+                    else
+                    if (Integer.parseInt(jsonorgs.getString("TYPEID")) > 100) {
+                        contentValuesForOnMain.put(DBHelper.KEY_SNAME, jsonorgs.getString("COMPANY").replaceAll("&quot;", "\'"));
+                        contentValuesForOnMain.put(DBHelper.KEY_ORGID, jsonorgs.getInt("TYPEID"));
+                        contentValues.put(DBHelper.KEY_TYPEID, jsonorgs.getInt("TYPEID"));
+                        database.insert(DBHelper.TABLE_ONMAIN, null, contentValuesForOnMain);
+                    }
+                    else
+                        {
+                            contentValues.put(DBHelper.KEY_TYPEID, jsonorgs.getInt("TYPEID"));
+                        }
+
+                    database.insert(DBHelper.TABLE_ORG, null, contentValues);
                 }
+
                 database.setTransactionSuccessful();
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -245,7 +259,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 for (int i = 0; i < departArray.length(); i++) {
                     JSONObject jsonorgs = departArray.getJSONObject(i);
                     contentValues.put(DBHelper.KEY_ID, jsonorgs.getInt(DBHelper.KEY_ID));
-                    contentValues.put(DBHelper.KEY_DEPARTMENT, jsonorgs.getString(DBHelper.KEY_DEPARTMENT).replaceAll("&quot;","\'"));
+                    contentValues.put(DBHelper.KEY_DEPARTMENT, jsonorgs.getString(DBHelper.KEY_DEPARTMENT).replaceAll("&quot;", "\'"));
 
                     if ((jsonorgs.getString(DBHelper.KEY_ORGID) != "null")) {
                         contentValues.put(DBHelper.KEY_ORGID, jsonorgs.getInt(DBHelper.KEY_ORGID));

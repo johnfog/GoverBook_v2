@@ -28,6 +28,7 @@ public class  ContactDetailActivity extends AppCompatActivity implements View.On
     boolean saved;
     MenuItem faveItem;
     NavigationView navigationView;
+    TextView tvPhoneDop;
 
 
     @Override
@@ -42,6 +43,7 @@ public class  ContactDetailActivity extends AppCompatActivity implements View.On
         tvPhone = (TextView) findViewById(R.id.tvPhone);
         TextView tvStatus = (TextView) findViewById(R.id.tvStatus);
         tvEmail = (TextView) findViewById(R.id.tvEmail);
+        tvPhoneDop = (TextView) findViewById(R.id.tvPhoneDop);
         TextView tvIpPhone = (TextView) findViewById(R.id.tvIpPhone);
         ImageButton btnDial = (ImageButton) findViewById(R.id.btnDial);
         ImageButton btnEmail = (ImageButton) findViewById(R.id.btnEmail);
@@ -52,7 +54,22 @@ public class  ContactDetailActivity extends AppCompatActivity implements View.On
         tvIpPhone.setText(userContact.CONTACTS);
         tvStatus.setText(userContact.getSTATUS());
         tvEmail.setText(userContact.getEMAIL());
-        tvPhone.setText(userContact.getPHONE());
+
+        String s = userContact.getPHONE();
+        s = s.replaceAll(" \\(","(");
+        s = s.replaceAll("\\) ", ")");
+        String[] str = s.split(" ",2);
+        str[0] = str[0].replaceAll("(?!-)(?!\\+)(?![()])\\p{P}", "");
+        tvPhone.setText(str[0]);
+        if (str.length > 1) {
+            tvPhoneDop.setText(str[1]);
+        }
+
+        if(tvPhoneDop.getText() != null && tvPhoneDop.getText().length() != 0 && !tvPhoneDop.getText().equals(""))
+        {
+            findViewById(R.id.linearLayout7Dop).setVisibility(View.VISIBLE);
+        }
+
         TextView tvDetailFio = (TextView) findViewById(R.id.tvDetailFio);
         tvDetailFio.setText(userContact.FIO);
         initToolbar();

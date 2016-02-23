@@ -48,7 +48,9 @@ public class WorkersFragment extends AbstractTabFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(LAYOUT, container, false);
         dbHelper = new DBHelper(context);
+
         database = dbHelper.getReadableDatabase();
+
         listLastWorkers();
 
         return view;

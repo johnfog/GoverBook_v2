@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -45,8 +46,7 @@ public class MainActivity extends AppCompatActivity {
     SQLiteDatabase database;
     ArrayList<UserContact> userContact;
     ExpandableListView searchResultOrg;
-    ArrayList<ArrayList<String>> groups = new ArrayList<ArrayList<String>>();
-    ExpListAdapter adapterForTypes;
+    ArrayList<ArrayList<String>> orgNames = new ArrayList<ArrayList<String>>();
     ExpListAdapter adapterForOrgs;
     ArrayList<Integer> orgId = new ArrayList();
     ListView searchFioResult;
@@ -80,112 +80,10 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        int isDbUpdated = 0;
-        if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
-            isDbUpdated = Integer.parseInt(data.getStringExtra("isDbUpdated"));
-        }
-
-    }
-
-    public void startSearchFio(){
-        userContact = dbHelper.searchByFio(etSearch.getText().toString(), database);
-        ItemMenuUsers itemMenuUsers = new ItemMenuUsers(userContact);
-        searchFioResult = (ListView) findViewById(R.id.searchFioResult);
-        itemMenuUsers.DrawMenu(searchFioResult);
-        searchFioResult.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                dbHelper.saveLast(userContact.get(position).FIO,userContact.get(position).STATUS,userContact.get(position).id,dbHelper);
-                intent = new Intent(MainActivity.this, ContactDetailActivity.class);
-                intent.putExtra("userid", userContact.get(position).getId());
-                startActivity(intent);
-            }
-        });
-
-    }
-
-    private void ListOrg(SQLiteDatabase database) {
-        String[][] list;
-        ArrayList<String> orgTypes = new ArrayList<String>();
-        ArrayList<Integer> orgTypesId = new ArrayList<Integer>();
-        String[][] orgListByType;
-        ArrayList<String> orgNames;
-
-        try {
-        list = dbHelper.ListOrg(database);
-        for (int i = 0; i < (list[0].length); i++) {
-            orgTypes.add(list[0][i]);
-            orgTypesId.add(Integer.parseInt(list[1][i]));
-        }
-
-        for (int i=0;i< (orgTypesId.size());i++) {
-            orgListByType = dbHelper.ListOrgOnId(String.valueOf(orgTypesId.get(i)),database);
-            orgNames= new ArrayList<String>();
-
-            for (int k = 0; k < (orgListByType[0].length); k++) {
-                orgNames.add(orgListByType[0][k]);
-                orgId.add(Integer.parseInt(orgListByType[1][k]));
-            }
-            groups.add(orgNames);
-        }
-
-        adapterForTypes = new ExpListAdapter(getApplicationContext(), groups,orgTypes,true);
-        searchResultOrg = (ExpandableListView) findViewById(R.id.searchOrgResult);
-        searchResultOrg.setAdapter(adapterForTypes);
-        searchResultOrg.setGroupIndicator(getResources().getDrawable(R.drawable.userliststate));
-
-
-        etSearch.setOnEditorActionListener(new EditText.OnEditorActionListener() {
-
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                startSearchOrg();
-                hideSoftKeyboard(MainActivity.this);
-                return actionId == EditorInfo.IME_ACTION_DONE;
-            }
-        });
-         } catch (Exception e) {}
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-
-
-    }
-
-
     // Метод сворачиваня клавиатуры
     public static void hideSoftKeyboard(Activity activity) {
         InputMethodManager inputMethodManager = (InputMethodManager)  activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
-    }
-
-    private void tab1Actions() {
-        etSearch.setText("");
-
-        etSearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() > 2) {
-                    startSearchFio();
-                }
-            }
-        });
-
-    }
-    
-    private void tab3Actions() {
-        ListFaveList();
-        
     }
 
     @Override
@@ -195,110 +93,6 @@ public class MainActivity extends AppCompatActivity {
             tab3Actions();
         }
         super.onResume();
-    }
-
-    private void ListFaveList() {
-        final String[][] favelist;
-        favelist =dbHelper.ListFave(database);
-
-        ListView listView = (ListView) findViewById(R.id.faveList);
-        FaveListAdapter faveListAdapter = new FaveListAdapter(this,favelist[0],favelist[1]);
-        listView.setAdapter(faveListAdapter);
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (favelist[0][position].equals(DBHelper.TYPE_ORG)) {
-                    String clickedOrgName = parent.getItemAtPosition(position).toString();
-                    intent = new Intent(MainActivity.this, OrgResultsActivity.class);
-                    intent.putExtra("orgName", clickedOrgName);
-                    startActivity(intent);
-                }
-
-                if (favelist[0][position].equals(DBHelper.TYPE_WORKER)) {
-                    int clickedId = Integer.parseInt(favelist[2][position]);
-                    intent = new Intent(MainActivity.this, ContactDetailActivity.class);
-                    intent.putExtra("userid", clickedId);
-                    startActivity(intent);
-                }
-
-            }
-        });
-
-    }
-
-    private void tab2Actions() {
-        groups.clear();
-        ListOrg(database);
-        etSearch.setText("");
-
-        etSearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() > 2) {
-                    startSearchOrg();
-                }
-            }
-        });
-
-        searchResultOrg.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
-            @Override
-            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-                return false;
-            }
-        });
-
-        searchResultOrg.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-            @Override
-            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-                String clickedOrgName = adapterForTypes.getChildById(groupPosition, childPosition);
-                intent = new Intent(MainActivity.this, OrgResultsActivity.class);
-                intent.putExtra("orgName", clickedOrgName);
-                startActivity(intent);
-                return false;
-            }
-        });
-
-    }
-
-
-    private void startSearchOrg() {
-        String[][] list;
-        ArrayList<String> orgTypes = new ArrayList<String>();
-        ArrayList<Integer> orgTypesId = new ArrayList<Integer>();
-
-        ExpandableListView listView = (ExpandableListView) findViewById(R.id.searchOrgResult);
-        list = dbHelper.SearchOrg(etSearch.getText().toString(),database);
-
-        orgTypes.clear();
-        for (int i = 0; i < (list[0].length); i++) {
-            orgTypes.add(list[0][i]);
-            orgTypesId.add(Integer.parseInt(list[1][i]));
-        }
-
-        adapterForOrgs = new ExpListAdapter(getApplicationContext(),orgTypes,false);
-        listView.setAdapter(adapterForOrgs);
-
-        listView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
-            @Override
-            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-                String clickedOrgName = adapterForOrgs.getGroup(groupPosition).toString();
-                intent = new Intent(MainActivity.this, OrgResultsActivity.class);
-                intent.putExtra("orgName", clickedOrgName);
-                startActivity(intent);
-                return false;
-            }
-        });
     }
 
 
@@ -337,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.nav_settings:
-                        intent = new Intent(MainActivity.this,SettingsActivity.class);
+                        intent = new Intent(MainActivity.this, SettingsActivity.class);
                         startActivity(intent);
                         break;
                 }
@@ -348,18 +142,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-
-    private void setupMenu() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout_main);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            drawer.openDrawer(GravityCompat.START);
-        }
-
-
-    }
-
 
     private void initTabs() {
         viewPager = (ViewPager) findViewById(R.id.viewPager);
@@ -402,6 +184,243 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+    }
+
+    private void startSearchOrg() {
+        String[][] list;
+        ArrayList<String> orgName = new ArrayList<String>();
+        ArrayList<Integer> orgNameId = new ArrayList<Integer>();
+
+        ExpandableListView listView = (ExpandableListView) findViewById(R.id.searchOrgResult);
+        list = dbHelper.SearchOrg(etSearch.getText().toString(),database);
+
+        orgName.clear();
+        for (int i = 0; i < (list[0].length); i++) {
+            orgName.add(list[0][i]);
+            orgNameId.add(Integer.parseInt(list[1][i]));
+        }
+
+        adapterForOrgs = new ExpListAdapter(getApplicationContext(),orgName,true);
+        listView.setAdapter(adapterForOrgs);
+
+    }
+
+    private void setupMenu() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout_main);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            drawer.openDrawer(GravityCompat.START);
+        }
+
+
+    }
+
+
+    private void tab1Actions() {
+        etSearch.setText("");
+
+        etSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 2) {
+                    startSearchFio();
+                }
+            }
+        });
+
+    }
+
+
+    private void tab2Actions() {
+        orgNames.clear();
+        ListOrgMain(database);
+        etSearch.setText("");
+
+        etSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 2) {
+                    startSearchOrg();
+                }
+                else ListOrgMain(database);
+            }
+        });
+
+
+        searchResultOrg.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                String clickedOrgName = adapterForOrgs.getChildById(groupPosition, childPosition);
+                intent = new Intent(MainActivity.this, OrgResultsActivity.class);
+                intent.putExtra("orgName", clickedOrgName);
+                startActivity(intent);
+                return false;
+            }
+        });
+
+    }
+
+    private void tab3Actions() {
+        ListFaveList();
+
+    }
+
+    public void startSearchFio(){
+        userContact = dbHelper.searchByFio(etSearch.getText().toString(), database);
+        ItemMenuUsers itemMenuUsers = new ItemMenuUsers(userContact);
+        searchFioResult = (ListView) findViewById(R.id.searchFioResult);
+        itemMenuUsers.DrawMenu(searchFioResult);
+        searchFioResult.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                dbHelper.saveLast(userContact.get(position).FIO, userContact.get(position).STATUS, userContact.get(position).id, dbHelper);
+                intent = new Intent(MainActivity.this, ContactDetailActivity.class);
+                intent.putExtra("userid", userContact.get(position).getId());
+                startActivity(intent);
+            }
+        });
+
+    }
+
+    private void ListOrgMain(SQLiteDatabase database) {
+        String[][] list;
+        ArrayList<String> orgTypes = new ArrayList<String>();
+        ArrayList<Integer> orgTypesId = new ArrayList<Integer>();
+        ArrayList<String> orgOnMain = new ArrayList<String>();
+        ArrayList<Integer> orgOnMainId = new ArrayList<Integer>();
+        String[][] orgListByType;
+        ArrayList<String> inTypeOrgNames;
+
+
+        //Добавляем Организации для главной страницы
+
+        list = dbHelper.ListOrgOnMain(database);
+        for (int i = 0; i < (list[0].length); i++) {
+            orgOnMain.add(list[0][i]);
+            orgOnMainId.add(Integer.parseInt(list[1][i]));
+        }
+
+
+        adapterForOrgs = new ExpListAdapter(getApplicationContext(),orgOnMain,true);
+
+        // Добавляем Типы организаций
+
+        list = dbHelper.ListOrgType(database);
+        for (int i = 0; i < (list[0].length); i++) {
+            orgTypes.add(list[0][i]);
+            orgTypesId.add(Integer.parseInt(list[1][i]));
+        }
+
+        for (int i=0;i< (orgTypesId.size());i++) {
+            orgListByType = dbHelper.ListOrgOnId(String.valueOf(orgTypesId.get(i)),database);
+            inTypeOrgNames= new ArrayList<String>();
+
+            for (int k = 0; k < (orgListByType[0].length); k++) {
+                inTypeOrgNames.add(orgListByType[0][k]);
+                orgId.add(Integer.parseInt(orgListByType[1][k]));
+            }
+            this.orgNames.add(inTypeOrgNames);
+        }
+
+        ExpListAdapter adapterForOrgs2 = new ExpListAdapter(getApplicationContext(),orgTypes,orgNames,false);
+
+        adapterForOrgs.addAdapter(adapterForOrgs2);
+
+        searchResultOrg = (ExpandableListView) findViewById(R.id.searchOrgResult);
+        searchResultOrg.setAdapter(adapterForOrgs);
+        searchResultOrg.setGroupIndicator(getResources().getDrawable(R.drawable.userliststate));
+
+
+        searchResultOrg.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+
+                if (adapterForOrgs.isOrg(groupPosition)) {
+
+                    String clickedOrgName = adapterForOrgs.getGroup(groupPosition).toString();
+                    intent = new Intent(MainActivity.this, OrgResultsActivity.class);
+                    intent.putExtra("orgName", clickedOrgName);
+                    startActivity(intent);
+                }
+
+                return false;
+            }
+        });
+
+
+        etSearch.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                startSearchOrg();
+                hideSoftKeyboard(MainActivity.this);
+                return actionId == EditorInfo.IME_ACTION_DONE;
+            }
+        });
+
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        int isDbUpdated = 0;
+        if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
+            isDbUpdated = Integer.parseInt(data.getStringExtra("isDbUpdated"));
+        }
+
+    }
+
+    private void ListFaveList() {
+        final String[][] favelist;
+        favelist =dbHelper.ListFave(database);
+
+        ListView listView = (ListView) findViewById(R.id.faveList);
+        FaveListAdapter faveListAdapter = new FaveListAdapter(this,favelist[0],favelist[1]);
+        listView.setAdapter(faveListAdapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (favelist[0][position].equals(DBHelper.TYPE_ORG)) {
+                    String clickedOrgName = parent.getItemAtPosition(position).toString();
+                    intent = new Intent(MainActivity.this, OrgResultsActivity.class);
+                    intent.putExtra("orgName", clickedOrgName);
+                    startActivity(intent);
+                }
+
+                if (favelist[0][position].equals(DBHelper.TYPE_WORKER)) {
+                    int clickedId = Integer.parseInt(favelist[2][position]);
+                    intent = new Intent(MainActivity.this, ContactDetailActivity.class);
+                    intent.putExtra("userid", clickedId);
+                    startActivity(intent);
+                }
+
+            }
+        });
 
     }
 

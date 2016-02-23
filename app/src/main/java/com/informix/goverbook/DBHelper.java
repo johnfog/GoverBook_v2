@@ -20,7 +20,7 @@ import java.util.ArrayList;
  */
 public class DBHelper extends SQLiteOpenHelper {
     // Объявляем Таблицы базы
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 8;
     public static final String DATABASE_NAME = "contactDb";
     public static final String TABLE_AREAS = "s_areas";
     public static final String TABLE_DEPART = "s_depart";
@@ -29,6 +29,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String TABLE_USERS = "s_users";
     public static final String TABLE_FAVE = "s_fave";
     public static final String TABLE_LAST = "s_last";
+    public static final String TABLE_ONMAIN = "s_onmain";
 
     // Объявляем Ключи таблицы s_users
     public static final String KEY_ID = "ID";
@@ -96,6 +97,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("create table " + TABLE_ORG + "(" + KEY_ID + " integer primary key," + KEY_COMPANY + " text," + KEY_LOWERCOMPANY + " text," + KEY_ADRES + " text," + KEY_AREAID + " integer," + KEY_DESCR + " text," + KEY_TYPEID + " integer)");
         db.execSQL("create table " + TABLE_AREAS + "(" + KEY_ID + " integer primary key," + KEY_SNAME + " text," + KEY_SORTING + " integer)");
         db.execSQL("create table " + TABLE_DEPART + "(" + KEY_ID + " integer primary key," + KEY_DEPARTMENT + " text,"+ KEY_ORGID + " integer," + KEY_SORTING + " integer)");
+        db.execSQL("create table " + TABLE_ONMAIN + "(" + KEY_ID + " integer primary key," + KEY_ORGID + " integer," + KEY_SNAME + " text)");
         db.execSQL("create table " + TABLE_OTYPE + "(" + KEY_ID + " integer primary key," + KEY_TITLE + " text)");
         db.execSQL("create table " + TABLE_LAST + "(" + KEY_ID + " integer primary key," + KEY_IDUSER + " integer," + KEY_FIO + " text," + KEY_STATUS + " text)");
         db.execSQL("create table " + TABLE_FAVE + "(" + KEY_ID + " integer primary key," + KEY_FAVETYPE + " integer," + KEY_IDUSER + " integer," + KEY_SNAME + " text)");
@@ -105,12 +107,13 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
-        if (oldVersion<5){
+//        if (oldVersion<6){
             db.execSQL("drop table if exists " + TABLE_FAVE);
             db.execSQL("drop table if exists " + TABLE_LAST);
             db.execSQL("create table " + TABLE_LAST + "(" + KEY_ID + " integer primary key," + KEY_IDUSER + " integer," + KEY_FIO + " text," + KEY_STATUS + " text)");
             db.execSQL("create table " + TABLE_FAVE + "(" + KEY_ID + " integer primary key," + KEY_FAVETYPE + " integer," + KEY_IDUSER + " integer," + KEY_SNAME + " text)");
-        }
+            db.execSQL("create table " + TABLE_ONMAIN + "(" + KEY_ID + " integer primary key," + KEY_ORGID + " integer," + KEY_SNAME + " text)");
+//        }
 
     }
 
@@ -296,6 +299,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
         Cursor cursor = database.rawQuery(querry, null);
 
+        Log.d("MyLog",""+cursor.getCount());
+
 
         int DEPARTIndex = cursor.getColumnIndex(DBHelper.KEY_DEPARTMENT);
         int DEPARTIDIndex = cursor.getColumnIndex(DBHelper.KEY_ID);
@@ -372,7 +377,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
 
-    public String[][] ListOrg(SQLiteDatabase database) {
+    public String[][] ListOrgType(SQLiteDatabase database) {
 
         String querry;
         String[][] result;
@@ -398,7 +403,7 @@ public class DBHelper extends SQLiteOpenHelper {
             }
             cursor.close();
         } else {
-            result = new String[1][1];
+            result = new String[2][1];
             result[0][0] = "Иные";
             result[1][0] = "6";
         }
@@ -406,6 +411,45 @@ public class DBHelper extends SQLiteOpenHelper {
         return result;
 
     }
+
+
+    public String[][] ListOrgOnMain(SQLiteDatabase database) {
+
+        String querry;
+        String[][] result;
+        // Строка запроса в sql для ФИО
+
+        querry = "SELECT * FROM " + DBHelper.TABLE_ONMAIN + " order by "+DBHelper.KEY_ORGID;
+
+        Cursor cursor = database.rawQuery(querry, null);
+        int SNAMEIndex = cursor.getColumnIndex(DBHelper.KEY_SNAME);
+        int ORGIDIndex = cursor.getColumnIndex(DBHelper.KEY_ORGID);
+
+        //Вывод результатов
+        int i=0;
+        if (cursor.getCount() > 0) {
+            result = new String[2][cursor.getCount()];
+            if (cursor.moveToFirst()) {
+                do {
+                    result[0][i] = cursor.getString(SNAMEIndex);
+                    result[1][i] = cursor.getString(ORGIDIndex);
+                    i++;
+
+                } while (cursor.moveToNext());
+            }
+            cursor.close();
+        } else {
+            result = new String[2][1];
+            result[0][0] = "";
+            result[1][0] = "0";
+        }
+        cursor.close();
+        return result;
+
+    }
+
+
+
 
     public void saveLast(String fio,String status,int iduser,DBHelper dbHelper){
         SQLiteDatabase database = dbHelper.getWritableDatabase();
