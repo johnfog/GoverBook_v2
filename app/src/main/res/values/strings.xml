@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">GoverBook</string>
-    <string name="navbar_menu_title">Меню</string>
+    <string name="about_title">О программе</string>
     <string name="fave_title">Избранное</string>
     <string name="workers_title">Сотрудники</string>
-    <string name="orgs_title">Организации</string>
+    <string name="update_title">Обновить</string>
     <string name="settings_title">Настройки</string>
     <string name="expand_title">Развернуть</string>
     <string name="search_title">Поиск</string>

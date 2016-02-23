@@ -85,8 +85,6 @@ public class OrgResultsActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.nav_settings:
-                        intent = new Intent(OrgResultsActivity.this,SettingsActivity.class);
-                        startActivity(intent);
                         break;
                 }
 

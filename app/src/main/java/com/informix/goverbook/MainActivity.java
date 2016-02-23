@@ -16,7 +16,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -73,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
         setTheme(R.style.AppDefault);
         super.onCreate(savedInstanceState);
         setContentView(LAYOUT);
+        initDb();
 
         //Находим элементы
         dbHelper = new DBHelper(this);
@@ -87,7 +87,6 @@ public class MainActivity extends AppCompatActivity {
         initTabs();
         initNavigationView();
         initToolbar();
-        initDb();
         initSpinner();
 
 
@@ -226,11 +225,14 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.nav_settings:
-                        intent = new Intent(MainActivity.this, SettingsActivity.class);
-                        startActivity(intent);
                         break;
                     case R.id.nav_fave:
                         break;
+                    case R.id.nav_update:
+                        File mTargetFile = new File("/data/data/com.informix.goverbook/cache" + "/base.zip");
+                        new UpdateDatabase(MainActivity.this,mTargetFile, "Качаю").execute("http://www.rcitsakha.ru/rcit/zz/base.zip");
+                        break;
+
                 }
 
                 return false;

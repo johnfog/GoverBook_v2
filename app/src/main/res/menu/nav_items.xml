@@ -7,21 +7,22 @@
             android:id="@+id/nav_workers"
             android:orderInCategory="1"
             android:icon="@mipmap/ic_sakha_circle"/>
-        <item
-            android:title="@string/orgs_title"
-            android:id="@+id/nav_orgs"
-            android:orderInCategory="2"
-            android:icon="@mipmap/ic_sakha_circle"/>
+
         <item
             android:title="@string/fave_title"
             android:id="@+id/nav_fave"
-            android:orderInCategory="3"
+            android:orderInCategory="2"
             android:icon="@mipmap/ic_menu_w"/>
         <item
-            android:title="@string/navbar_menu_title"
+            android:title="@string/about_title"
             android:id="@+id/nav_search"
+            android:orderInCategory="3"
+            android:icon="@android:drawable/ic_dialog_info"/>
+        <item
+            android:title="@string/update_title"
+            android:id="@+id/nav_update"
             android:orderInCategory="4"
-            android:icon="@mipmap/ic_search_wh"/>
+            android:icon="@android:drawable/ic_menu_preferences"/>
         <item
             android:title="@string/settings_title"
             android:id="@+id/nav_settings"

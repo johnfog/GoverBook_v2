@@ -122,8 +122,6 @@ public class  ContactDetailActivity extends AppCompatActivity implements View.On
             public boolean onNavigationItemSelected(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.nav_settings:
-                        intent = new Intent(ContactDetailActivity.this,SettingsActivity.class);
-                        startActivity(intent);
                         break;
                 }
 
