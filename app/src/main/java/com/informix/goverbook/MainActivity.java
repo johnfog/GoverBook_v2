@@ -32,6 +32,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.informix.goverbook.activitys.AboutActivity;
+import com.informix.goverbook.activitys.Howtoupdate;
 import com.informix.goverbook.activitys.SettingsActivity;
 import com.informix.goverbook.adapters.ExpListAdapter;
 import com.informix.goverbook.adapters.FaveListAdapter;
@@ -62,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Integer> orgId = new ArrayList();
     ListView searchFioResult;
     private NavigationView navigationView;
+    private DrawerLayout drawer;
     private Spinner spinner;
     String[] areaIds;
     List<String> areaNames;
@@ -86,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
         btnClear = (Button) findViewById(R.id.btn_clear);
         spinner = (Spinner) findViewById(R.id.areaSpinner);
         viewPager = (ViewPager) findViewById(R.id.viewPager);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout_main);
 
         //Инициилизируем
         mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
@@ -165,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
         adapterForOrgs = new ExpListAdapter(getApplicationContext(),orgInArea,true);
         searchResultOrg.setAdapter(adapterForOrgs);
 
-        if (searchResultOrg.getItemAtPosition(0).toString().equals("Ничего не найденно"))
+        if (searchResultOrg.getItemAtPosition(0).toString().equals(getResources().getString(R.string.nothing_found)))
         {
             searchResultOrg.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
                 @Override
@@ -241,6 +244,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
                 switch (item.getItemId()) {
+                    case R.id.nav_last:
+                        viewPager.setCurrentItem(0);
+                        tab1Actions();
+                        drawer.closeDrawer(GravityCompat.START);
+                        break;
+                    case R.id.nav_how_update:
+                        intent=new Intent(MainActivity.this, Howtoupdate.class);
+                        startActivity(intent);
+                        break;
                     case R.id.nav_settings:
                         intent=new Intent(MainActivity.this, SettingsActivity.class);
                         startActivity(intent);
@@ -343,7 +355,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupMenu() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout_main);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {

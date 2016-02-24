@@ -9,13 +9,13 @@ import android.view.View;
 
 import com.informix.goverbook.R;
 
-public class AboutActivity extends AppCompatActivity {
+public class Howtoupdate extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppDefault);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_about);
+        setContentView(R.layout.activity_howtoupdate);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 

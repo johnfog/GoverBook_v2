@@ -3,31 +3,32 @@
     <group android:checkableBehavior="single">
 
         <item
-            android:title="@string/workers_title"
-            android:id="@+id/nav_workers"
+            android:title="@string/last_title"
+            android:id="@+id/nav_last"
             android:orderInCategory="1"
-            android:icon="@mipmap/ic_sakha_circle"/>
+            android:icon="@android:drawable/ic_menu_compass"/>
 
         <item
-            android:title="@string/fave_title"
-            android:id="@+id/nav_fave"
+            android:title="@string/how_update"
+            android:id="@+id/nav_how_update"
             android:orderInCategory="2"
-            android:icon="@mipmap/ic_menu_w"/>
-        <item
-            android:title="@string/about_title"
-            android:id="@+id/nav_about"
-            android:orderInCategory="3"
-            android:icon="@android:drawable/ic_dialog_info"/>
+            android:icon="@android:drawable/ic_menu_edit"/>
         <item
             android:title="@string/update_title"
             android:id="@+id/nav_update"
-            android:orderInCategory="4"
-            android:icon="@android:drawable/ic_menu_preferences"/>
+            android:orderInCategory="3"
+            android:icon="@android:drawable/ic_menu_rotate"/>
+
         <item
             android:title="@string/settings_title"
             android:id="@+id/nav_settings"
+            android:orderInCategory="4"
+            android:icon="@android:drawable/ic_menu_preferences"/>
+        <item
+            android:title="@string/about_title"
+            android:id="@+id/nav_about"
             android:orderInCategory="5"
-            android:icon="@mipmap/ic_menu_w"/>
+            android:icon="@android:drawable/ic_menu_info_details"/>
 
     </group>
 
