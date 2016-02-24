@@ -3,9 +3,13 @@
     <string name="about_title">О программе</string>
     <string name="fave_title">Избранное</string>
     <string name="workers_title">Сотрудники</string>
+    <string name="org_title">Организации</string>
     <string name="update_title">Обновить</string>
     <string name="settings_title">Настройки</string>
     <string name="expand_title">Развернуть</string>
     <string name="search_title">Поиск</string>
+    <string name="yakutsk_id">35</string>
+    <string name="default_city_name">г.Якутск</string>
+    <string name="nothing_found">Ничего не найденно</string>
 
 </resources>

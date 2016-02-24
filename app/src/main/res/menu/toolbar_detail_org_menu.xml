@@ -17,12 +17,4 @@
         android:icon="@mipmap/ic_star_outline"
         app:showAsAction="ifRoom"/>
 
-
-    <item
-        android:id="@+id/navbar_menu"
-        android:title="@string/about_title"
-        android:orderInCategory="3"
-        android:icon="@mipmap/ic_menu_w"
-        app:showAsAction="ifRoom"/>
-
 </menu>

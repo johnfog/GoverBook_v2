@@ -4,19 +4,25 @@
     android:layout_height="?attr/actionBarSize"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="?attr/colorPrimary">
-
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="#00000000" >
 <android.support.v7.widget.LinearLayoutCompat
 
 android:orientation="horizontal"
 android:layout_width="fill_parent"
-android:layout_height="wrap_content"
+android:layout_height="fill_parent"
 android:weightSum="100"
 android:id="@+id/linearLayout2"
 android:background="@drawable/shape_search_line">
 
+
 <android.support.v7.widget.AppCompatEditText
     android:layout_width="0dp"
     android:layout_height="wrap_content"
+    android:paddingLeft="15dp"
     android:id="@+id/searchString"
     android:inputType="text"
     android:imeOptions="actionDone"
@@ -24,14 +30,25 @@ android:background="@drawable/shape_search_line">
     android:layout_weight="65"
     android:textIsSelectable="false"
     android:textColor="@color/textColor"
-    android:textSize="@dimen/edit_text_size"
+    android:textSize="13dp"
     android:autoText="true"
     app:backgroundTint="#00000000"
    />
-
+    <Button
+        android:id="@+id/btn_clear"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_gravity="end|center_vertical"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
+        android:background="#00000000"
+        android:drawableRight="@drawable/ic_close"
+        android:visibility="gone"
+         />
     <android.support.v7.widget.AppCompatSpinner
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
+        android:padding="0dp"
         android:id="@+id/areaSpinner"
         android:layout_weight="35"
         android:textColor="@color/textColor"
@@ -39,7 +56,8 @@ android:background="@drawable/shape_search_line">
         app:backgroundTint="#00000000"
         />
 
+
     </android.support.v7.widget.LinearLayoutCompat>
     />
-
+    </FrameLayout>
     </android.support.v7.widget.Toolbar>

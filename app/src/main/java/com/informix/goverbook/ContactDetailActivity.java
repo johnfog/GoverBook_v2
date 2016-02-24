@@ -54,11 +54,12 @@ public class  ContactDetailActivity extends AppCompatActivity implements View.On
         tvIpPhone.setText(userContact.CONTACTS);
 
 
-        if (userContact.CONTACTS.equals("-") || userContact.CONTACTS.equals("")) {findViewById(R.id.linearLayoutContacts).setVisibility(View.GONE);}
-        else
-        {
-            tvIpPhone.setText(userContact.CONTACTS);
-        }
+
+            if (userContact.CONTACTS.equals("-") || userContact.CONTACTS.equals("")) {
+                findViewById(R.id.linearLayoutContacts).setVisibility(View.GONE);
+            } else {
+                tvIpPhone.setText(userContact.CONTACTS);
+            }
 
         tvStatus.setText(userContact.getSTATUS());
         tvEmail.setText(userContact.getEMAIL());

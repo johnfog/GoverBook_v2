@@ -42,6 +42,9 @@ public class TabsAdapter extends FragmentPagerAdapter {
         return tabs.size();
     }
 
+
+
+
     private void initTabsMap(Context context) {
         tabs = new HashMap<>();
         tabs.put(0, WorkersFragment.getInstance(context));

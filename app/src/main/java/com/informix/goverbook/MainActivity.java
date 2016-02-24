@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,6 +25,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ListView;
@@ -47,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private ViewPager viewPager;
     private EditText etSearch;
+    private Button btnClear;
+
     Intent intent;
     DBHelper dbHelper;
     SQLiteDatabase database;
@@ -78,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
         dbHelper = new DBHelper(this);
         database = dbHelper.getReadableDatabase();
         etSearch = (EditText) findViewById(R.id.searchString);
+        btnClear = (Button) findViewById(R.id.btn_clear);
         spinner = (Spinner) findViewById(R.id.areaSpinner);
         viewPager = (ViewPager) findViewById(R.id.viewPager);
 
@@ -87,12 +92,23 @@ public class MainActivity extends AppCompatActivity {
         initTabs();
         initNavigationView();
         initToolbar();
+        initClearButton();
         initSpinner();
-
 
         tab1Actions();
         viewPager.setCurrentItem(0);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
+
+    }
+
+    private void initClearButton() {
+        btnClear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                etSearch.setText("");
+            }
+        });
     }
 
     private void initSpinner() {
@@ -106,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, areaNames);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
-        areaInSetting=mSettings.getString(SELECTED_AREA, "г.Якутск");
+        areaInSetting=mSettings.getString(SELECTED_AREA, getString(R.string.default_city_name));
         selectedArea=areaNames.indexOf(areaInSetting);
         spinner.setSelection(selectedArea);
 
@@ -120,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
                 selectedArea = position;
 
                 if (viewPager.getCurrentItem() == 1) {
-                    if (areaIds[selectedArea].equals("35")) {
+                    if (areaIds[selectedArea].equals(getString(R.string.yakutsk_id))) {
                         ListOrgMain(database);
                     } else
                         displayOrgOnArea();
@@ -230,16 +246,13 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.nav_update:
                         File mTargetFile = new File("/data/data/com.informix.goverbook/cache" + "/base.zip");
-                        new UpdateDatabase(MainActivity.this,mTargetFile, "Качаю").execute("http://www.rcitsakha.ru/rcit/zz/base.zip");
+                        new UpdateDatabase(MainActivity.this, mTargetFile, "Качаю").execute("http://www.rcitsakha.ru/rcit/zz/base.zip");
                         break;
-
                 }
 
                 return false;
             }
         });
-
-
     }
 
 
@@ -253,7 +266,6 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(viewPager);
 
-
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -264,7 +276,12 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case 1:
                         viewPager.setCurrentItem(1);
-                        tab2Actions();
+                        if (areaIds[selectedArea].equals(getString(R.string.yakutsk_id))) {
+                            tab2Actions();
+                        } else {
+                            tab2Actions();
+                            displayOrgOnArea();
+                        }
                         break;
                     case 2:
                         viewPager.setCurrentItem(2);
@@ -342,7 +359,11 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+                if (!etSearch.getText().toString().equals("")) { //if edittext include text
+                    btnClear.setVisibility(View.VISIBLE);
+                } else { //not include text
+                    btnClear.setVisibility(View.GONE);
+                }
             }
 
             @Override
@@ -369,6 +390,11 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!etSearch.getText().toString().equals("")) { //if edittext include text
+                    btnClear.setVisibility(View.VISIBLE);
+                } else { //not include text
+                    btnClear.setVisibility(View.GONE);
+                }
 
             }
 
@@ -404,16 +430,27 @@ public class MainActivity extends AppCompatActivity {
         ItemMenuUsers itemMenuUsers = new ItemMenuUsers(userContact);
         searchFioResult = (ListView) findViewById(R.id.searchFioResult);
         itemMenuUsers.DrawMenu(searchFioResult);
-        searchFioResult.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                dbHelper.saveLast(userContact.get(position).FIO, userContact.get(position).STATUS, userContact.get(position).id, dbHelper);
-                intent = new Intent(MainActivity.this, ContactDetailActivity.class);
-                intent.putExtra("userid", userContact.get(position).getId());
-                startActivity(intent);
-            }
-        });
 
+        if (userContact.get(0).getFIO().equals(getString(R.string.nothing_found)))
+        {
+            searchFioResult.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                }
+            });
+        }
+            else {
+            searchFioResult.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    dbHelper.saveLast(userContact.get(position).FIO, userContact.get(position).STATUS, userContact.get(position).id, dbHelper);
+                    intent = new Intent(MainActivity.this, ContactDetailActivity.class);
+                    intent.putExtra("userid", userContact.get(position).getId());
+                    startActivity(intent);
+                }
+            });
+        }
     }
 
     private void ListOrgMain(SQLiteDatabase database) {
