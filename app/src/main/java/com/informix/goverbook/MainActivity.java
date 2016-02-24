@@ -16,7 +16,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,6 +31,8 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.informix.goverbook.activitys.AboutActivity;
+import com.informix.goverbook.activitys.SettingsActivity;
 import com.informix.goverbook.adapters.ExpListAdapter;
 import com.informix.goverbook.adapters.FaveListAdapter;
 import com.informix.goverbook.adapters.TabsAdapter;
@@ -241,8 +242,12 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.nav_settings:
+                        intent=new Intent(MainActivity.this, SettingsActivity.class);
+                        startActivity(intent);
                         break;
-                    case R.id.nav_fave:
+                    case R.id.nav_about:
+                        intent=new Intent(MainActivity.this, AboutActivity.class);
+                        startActivity(intent);
                         break;
                     case R.id.nav_update:
                         File mTargetFile = new File("/data/data/com.informix.goverbook/cache" + "/base.zip");

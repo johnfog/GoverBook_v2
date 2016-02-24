@@ -17,7 +17,6 @@ import android.widget.SimpleAdapter;
 
 import com.informix.goverbook.ContactDetailActivity;
 import com.informix.goverbook.DBHelper;
-import com.informix.goverbook.MainActivity;
 import com.informix.goverbook.R;
 import com.informix.goverbook.UserContact;
 

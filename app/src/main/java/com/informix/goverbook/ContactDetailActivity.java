@@ -17,6 +17,10 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.informix.goverbook.DBHelper;
+import com.informix.goverbook.R;
+import com.informix.goverbook.UserContact;
+
 public class  ContactDetailActivity extends AppCompatActivity implements View.OnClickListener{
     private static final int LAYOUT = R.style.AppDefault;
     private Toolbar toolbar;

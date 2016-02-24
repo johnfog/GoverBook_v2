@@ -15,7 +15,7 @@
             android:icon="@mipmap/ic_menu_w"/>
         <item
             android:title="@string/about_title"
-            android:id="@+id/nav_search"
+            android:id="@+id/nav_about"
             android:orderInCategory="3"
             android:icon="@android:drawable/ic_dialog_info"/>
         <item
