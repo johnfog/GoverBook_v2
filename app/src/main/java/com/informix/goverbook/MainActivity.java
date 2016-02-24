@@ -323,6 +323,7 @@ public class MainActivity extends AppCompatActivity {
         adapterForOrgs = new ExpListAdapter(getApplicationContext(),orgName,true);
         listView.setAdapter(adapterForOrgs);
 
+
         if (listView.getItemAtPosition(0).toString().equals("Ничего не найденно"))
         {
             searchResultOrg.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {

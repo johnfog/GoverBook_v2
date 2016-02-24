@@ -225,7 +225,7 @@ public class DBHelper extends SQLiteOpenHelper {
             }
             cursor.close();
         } else {
-            userContact = new UserContact(0,"Ничего не найдено","","","","",0,"",0,0);
+            userContact = new UserContact(0,"Ничего не найденно","","","","",0,"",0,0);
             result.add(userContact);
         }
 
@@ -348,7 +348,7 @@ public class DBHelper extends SQLiteOpenHelper {
             }
             cursor.close();
         } else {
-            userContact = new UserContact(0, "Ничего не найдено", "", "", "", "", 0, "", 0, 0);
+            userContact = new UserContact(0, "Ничего не найденно", "", "", "", "", 0, "", 0, 0);
             listuserContacts.add(userContact);
         }
 
