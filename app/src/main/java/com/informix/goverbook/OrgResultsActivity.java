@@ -2,13 +2,16 @@ package com.informix.goverbook;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
+import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,12 +33,19 @@ public class OrgResultsActivity extends AppCompatActivity {
     boolean saved;
     MenuItem faveItem;
     NavigationView navigationView;
+    SharedPreferences mSettings;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppDefault);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_org_results);
+
+
+        mSettings = PreferenceManager.getDefaultSharedPreferences(this);
+        expanded=mSettings.getBoolean("always_expand",false);
+        Log.d("MyLog",""+expanded);
 
         dbHelper = new DBHelper(this);
         SQLiteDatabase database = dbHelper.getReadableDatabase();
@@ -86,7 +96,6 @@ public class OrgResultsActivity extends AppCompatActivity {
                     case R.id.nav_settings:
                         break;
                 }
-
                 return false;
             }
         });
@@ -106,6 +115,14 @@ public class OrgResultsActivity extends AppCompatActivity {
         if (saved){
             faveItem.setIcon(R.mipmap.ic_star);
         }
+
+        //Обработчик настроек пользователя
+
+        if (expanded)
+            expandItems();
+        else
+            collapseItems();
+
         return super.onPrepareOptionsMenu(menu);
     }
 

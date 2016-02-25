@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
@@ -30,14 +31,12 @@ import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
-
 import com.informix.goverbook.activitys.AboutActivity;
 import com.informix.goverbook.activitys.Howtoupdate;
 import com.informix.goverbook.activitys.SettingsActivity;
 import com.informix.goverbook.adapters.ExpListAdapter;
 import com.informix.goverbook.adapters.FaveListAdapter;
 import com.informix.goverbook.adapters.TabsAdapter;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -52,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private EditText etSearch;
     private Button btnClear;
-
     Intent intent;
     DBHelper dbHelper;
     SQLiteDatabase database;
@@ -71,10 +69,6 @@ public class MainActivity extends AppCompatActivity {
     private int selectedArea;
 
 
-    public static final String APP_PREFERENCES = "goverbook";
-    private static final String SELECTED_AREA = "SELECTED_AREA";
-
-
     public void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppDefault);
         super.onCreate(savedInstanceState);
@@ -91,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout_main);
 
         //Инициилизируем
-        mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+        mSettings = PreferenceManager.getDefaultSharedPreferences(this);
 
         initTabs();
         initNavigationView();
@@ -126,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, areaNames);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
-        areaInSetting=mSettings.getString(SELECTED_AREA, getString(R.string.default_city_name));
+        areaInSetting=mSettings.getString(getResources().getString(R.string.SELECTED_AREA), getString(R.string.default_city_name));
         selectedArea=areaNames.indexOf(areaInSetting);
         spinner.setSelection(selectedArea);
 
@@ -135,12 +129,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 SharedPreferences.Editor editor = mSettings.edit();
-                editor.putString(SELECTED_AREA, String.valueOf(parent.getItemAtPosition(position)));
+                editor.putString(getResources().getString(R.string.SELECTED_AREA), String.valueOf(parent.getItemAtPosition(position)));
                 editor.apply();
                 selectedArea = position;
 
                 if (viewPager.getCurrentItem() == 1) {
-                    if (areaIds[selectedArea].equals(getString(R.string.yakutsk_id))) {
+                    if (areaIds[selectedArea].equals(getString(R.string.default_city_id))) {
                         ListOrgMain(database);
                     } else
                         displayOrgOnArea();
@@ -208,6 +202,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        initSpinner();
+
         if (viewPager.getCurrentItem()==2)
         {
             tab3Actions();
@@ -293,7 +289,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case 1:
                         viewPager.setCurrentItem(1);
-                        if (areaIds[selectedArea].equals(getString(R.string.yakutsk_id))) {
+                        if (areaIds[selectedArea].equals(getString(R.string.default_city_id))) {
                             tab2Actions();
                         } else {
                             tab2Actions();
