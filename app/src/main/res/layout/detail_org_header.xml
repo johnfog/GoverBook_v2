@@ -6,24 +6,17 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:background="#02a2e8">
+        android:layout_height="66dp"
+        android:layout_gravity="left"
+        android:background="#02a2e8"
+        android:gravity="left"
+        android:weightSum="1">
 
         <ImageView
-            android:layout_width="fill_parent"
-            android:layout_height="80dp"
-            android:id="@+id/imageView6"
-            android:baselineAlignBottom="false"
-            android:src="@mipmap/ic_organization"
-            android:background="#02a2e8" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+            android:layout_width="72dp"
+            android:layout_height="match_parent"
+            android:id="@+id/imageView7"
+            android:src="@drawable/ic_org" />
 
         <TextView
             android:layout_width="fill_parent"
@@ -37,6 +30,13 @@
             android:paddingBottom="10dp"
             android:textColor="#ffffff"
             android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
     </LinearLayout>
 
 </LinearLayout>

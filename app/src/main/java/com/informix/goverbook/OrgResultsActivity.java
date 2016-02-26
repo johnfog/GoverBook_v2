@@ -45,7 +45,6 @@ public class OrgResultsActivity extends AppCompatActivity {
 
         mSettings = PreferenceManager.getDefaultSharedPreferences(this);
         expanded=mSettings.getBoolean("always_expand",false);
-        Log.d("MyLog",""+expanded);
 
         dbHelper = new DBHelper(this);
         SQLiteDatabase database = dbHelper.getReadableDatabase();
@@ -54,7 +53,6 @@ public class OrgResultsActivity extends AppCompatActivity {
         intent = getIntent();
         clickedOrgName = intent.getStringExtra("orgName");
         orgName.setText(clickedOrgName);
-
 
         org=dbHelper.searchOrgByName(clickedOrgName, database);
         org.DrawOrgContact(searchResult, getApplicationContext());

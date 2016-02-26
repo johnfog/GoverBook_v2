@@ -298,10 +298,6 @@ public class DBHelper extends SQLiteOpenHelper {
         querry = "SELECT department,s_depart.id FROM s_org INNER JOIN s_depart ON s_depart.ORGID=s_org.id where COMPANY == \""+companyName+"\" ORDER BY s_depart.sorting";
 
         Cursor cursor = database.rawQuery(querry, null);
-
-        Log.d("MyLog",""+cursor.getCount());
-
-
         int DEPARTIndex = cursor.getColumnIndex(DBHelper.KEY_DEPARTMENT);
         int DEPARTIDIndex = cursor.getColumnIndex(DBHelper.KEY_ID);
 

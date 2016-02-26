@@ -23,7 +23,6 @@ public class OrgContact {
         this.departs = departs;
     }
 
-
     public Integer GetUserIdOnOrg(Integer departposition,Integer userposition){
         return formingUsersID.get(departposition).get(userposition);
     }
