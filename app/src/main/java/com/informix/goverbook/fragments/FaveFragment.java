@@ -21,7 +21,6 @@ public class FaveFragment extends AbstractTabFragment {
         FaveFragment fragment = new FaveFragment();
         fragment.setArguments(args);
         fragment.setContext(context);
-        fragment.setTitle(context.getString(R.string.fave_title));
         return fragment;
     }
 

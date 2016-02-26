@@ -221,7 +221,7 @@ public class  ContactDetailActivity extends AppCompatActivity implements View.On
         if (saved) {
             toast = Toast.makeText(getApplicationContext(),
                     "Контакт удален из избранных", Toast.LENGTH_SHORT);
-                    faveItem.setIcon(R.mipmap.ic_star_outline);
+                    faveItem.setIcon(R.mipmap.ic_star);
                     dbHelper.deleteFaveContact(userContact.id, dbHelper);
                     saved=false;
 
@@ -229,7 +229,7 @@ public class  ContactDetailActivity extends AppCompatActivity implements View.On
             toast = Toast.makeText(getApplicationContext(),
                     "Контакт был добавлен в избранные", Toast.LENGTH_SHORT);
             dbHelper.saveFave(userContact.FIO, DBHelper.TYPE_WORKER, userContact.id, dbHelper);
-            faveItem.setIcon(R.mipmap.ic_star);
+            faveItem.setIcon(R.mipmap.ic_star_outline);
             saved=true;
 
         }

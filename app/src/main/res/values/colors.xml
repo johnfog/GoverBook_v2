@@ -4,7 +4,8 @@
     <color name="colorPrimaryDark">#1e88e5</color>
     <color name="colorWhite">#FFFFFF</color>
     <color name="mainBackground">#FFFFFF</color>
-    <color name="colorBlack">#191919</color>
+    <color name="colorBlack">#212121</color>
+    <color name="colorGrey">#757575</color>
     <color name="textColor">#333333</color>
     <color name="colorPrimary2">#0076a2</color>
 </resources>

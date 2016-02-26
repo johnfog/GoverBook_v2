@@ -2,7 +2,6 @@ package com.informix.goverbook;
 
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
@@ -31,12 +30,14 @@ import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+
 import com.informix.goverbook.activitys.AboutActivity;
 import com.informix.goverbook.activitys.Howtoupdate;
 import com.informix.goverbook.activitys.SettingsActivity;
 import com.informix.goverbook.adapters.ExpListAdapter;
 import com.informix.goverbook.adapters.FaveListAdapter;
 import com.informix.goverbook.adapters.TabsAdapter;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -204,6 +205,10 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         initSpinner();
 
+        if (drawer.isDrawerOpen(GravityCompat.START))
+            drawer.closeDrawer(GravityCompat.START);
+
+
         if (viewPager.getCurrentItem()==2)
         {
             tab3Actions();
@@ -223,7 +228,7 @@ public class MainActivity extends AppCompatActivity {
     private void initToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        toolbar.setNavigationIcon(R.mipmap.ic_menu_w);
+        toolbar.setNavigationIcon(R.drawable.ic_menu_w);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -274,6 +279,7 @@ public class MainActivity extends AppCompatActivity {
     private void initTabs() {
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         TabsAdapter adapter = new TabsAdapter(this, getSupportFragmentManager());
+        viewPager.setOffscreenPageLimit(1);
         viewPager.setAdapter(adapter);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
@@ -315,6 +321,12 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+
+        tabLayout.getTabAt(0).setIcon(getResources().getDrawable(R.drawable.ic_workers));
+        tabLayout.getTabAt(1).setIcon(getResources().getDrawable(R.drawable.ic_org));
+        tabLayout.getTabAt(2).setIcon(getResources().getDrawable(R.drawable.ic_fave));
+
 
 
     }
@@ -391,7 +403,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void tab2Actions() {
-        orgNames.clear();
         ListOrgMain(database);
         etSearch.setText("");
 

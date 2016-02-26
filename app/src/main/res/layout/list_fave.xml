@@ -21,6 +21,8 @@
         android:layout_marginLeft="14dp"
         android:layout_marginTop="0dp"
         android:layout_toRightOf="@+id/imageFaveType"
+        android:textColor="@color/colorBlack"
+        android:textSize="@dimen/menu_group_size"
         android:text="TextView" />
 
 </RelativeLayout>

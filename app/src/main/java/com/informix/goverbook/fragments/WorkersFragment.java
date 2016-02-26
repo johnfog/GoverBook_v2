@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import com.informix.goverbook.ContactDetailActivity;
 import com.informix.goverbook.DBHelper;
 import com.informix.goverbook.R;
 import com.informix.goverbook.UserContact;
+import com.informix.goverbook.adapters.WorkersListAdapter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,7 +40,7 @@ public class WorkersFragment extends AbstractTabFragment {
         WorkersFragment fragment = new WorkersFragment();
         fragment.setArguments(args);
         fragment.setContext(context);
-        fragment.setTitle(context.getString(R.string.workers_title));
+
         return fragment;
     }
 
@@ -60,24 +62,19 @@ public class WorkersFragment extends AbstractTabFragment {
     }
 
     public void listLastWorkers(){
-        List<Map<String, String>> data = new ArrayList<Map<String, String>>();
         userContact = dbHelper.ListLast(database);
 
+
+        String[] names=new String[userContact.size()];
+        String[] orgs=new String[userContact.size()];
+
         for (int i=0;i<userContact.size();i++) {
-            Map<String, String> datum = new HashMap<String, String>(2);
-            datum.put("fio", userContact.get(i).getFIO());
-            datum.put("status", userContact.get(i).getSTATUS());
-            data.add(datum);
+            names[i]=userContact.get(i).getFIO();
+            orgs[i]=userContact.get(i).getSTATUS();
         }
 
-
-
-        SimpleAdapter adapter1 = new SimpleAdapter(context, data, android.R.layout.simple_list_item_2,
-                new String[] {"fio", "status"},
-                new int[] {android.R.id.text1,
-                        android.R.id.text2});
-
         searchFioResult = (ListView) view.findViewById(R.id.searchFioResult);
+        WorkersListAdapter adapter1 = new WorkersListAdapter(searchFioResult.getContext(),names,orgs);
         searchFioResult.setAdapter(adapter1);
 
         searchFioResult.setOnItemClickListener(new AdapterView.OnItemClickListener() {

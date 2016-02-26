@@ -8,9 +8,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="@dimen/menu_group_size"
-        android:layout_marginLeft="@dimen/menu_group_margin_left"
         android:textColor="@color/colorBlack"
-        android:layout_margin="@dimen/menu_group_margin_layout"
+        android:padding="@dimen/padding_menu"
         />
 
 </LinearLayout>

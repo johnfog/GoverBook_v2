@@ -7,10 +7,6 @@ import java.io.FileOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-/**
- *
- * @author jon
- */
 public class Decompress {
 
     public void unzip(String _zipFile, String _targetLocation) {

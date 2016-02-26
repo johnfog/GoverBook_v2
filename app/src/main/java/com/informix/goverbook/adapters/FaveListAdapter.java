@@ -40,12 +40,12 @@ public class FaveListAdapter extends ArrayAdapter{
 
         String str = fType[position];
         if (str.equals(DBHelper.TYPE_ORG)) {
-            imageView.setImageResource(R.mipmap.ic_home_modern);
+            imageView.setImageResource(R.mipmap.organization);
 
         }
 
         if (str.equals(DBHelper.TYPE_WORKER)) {
-            imageView.setImageResource(R.mipmap.ic_account_card_details);
+            imageView.setImageResource(R.mipmap.detail_job);
         }
 
         return rowView;

@@ -6,6 +6,6 @@
         android:id="@+id/navbar_menu"
         android:title="@string/about_title"
         android:orderInCategory="1"
-        android:icon="@mipmap/ic_menu_w"
+        android:icon="@android:drawable/ic_menu_view"
         app:showAsAction="ifRoom"/>
 </menu>

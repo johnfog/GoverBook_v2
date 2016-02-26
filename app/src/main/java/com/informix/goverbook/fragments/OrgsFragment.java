@@ -17,7 +17,6 @@ public class OrgsFragment extends AbstractTabFragment {
         OrgsFragment fragment = new OrgsFragment();
         fragment.setArguments(args);
         fragment.setContext(context);
-        fragment.setTitle(context.getString(R.string.org_title));
         return fragment;
     }
 
