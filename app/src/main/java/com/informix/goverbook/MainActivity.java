@@ -37,6 +37,7 @@ import com.informix.goverbook.activitys.SettingsActivity;
 import com.informix.goverbook.adapters.ExpListAdapter;
 import com.informix.goverbook.adapters.FaveListAdapter;
 import com.informix.goverbook.adapters.TabsAdapter;
+import com.informix.goverbook.adapters.WorkersListAdapter;
 
 import java.io.File;
 import java.io.IOException;
@@ -94,8 +95,31 @@ public class MainActivity extends AppCompatActivity {
         initClearButton();
         initSpinner();
 
-        tab1Actions();
         viewPager.setCurrentItem(0);
+        etSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!etSearch.getText().toString().equals("")) { //if edittext include text
+                    btnClear.setVisibility(View.VISIBLE);
+                } else { //not include text
+                    btnClear.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 2) {
+                    startSearchFio();
+                }
+            }
+        });
+
+
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
 
@@ -129,9 +153,6 @@ public class MainActivity extends AppCompatActivity {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                SharedPreferences.Editor editor = mSettings.edit();
-                editor.putString(getResources().getString(R.string.SELECTED_AREA), String.valueOf(parent.getItemAtPosition(position)));
-                editor.apply();
                 selectedArea = position;
 
                 if (viewPager.getCurrentItem() == 1) {
@@ -205,8 +226,8 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         initSpinner();
 
-        if (drawer.isDrawerOpen(GravityCompat.START))
-            drawer.closeDrawer(GravityCompat.START);
+//        if (drawer.isDrawerOpen(GravityCompat.START))
+//            drawer.closeDrawer(GravityCompat.START);
 
 
         if (viewPager.getCurrentItem()==2)
@@ -251,15 +272,15 @@ public class MainActivity extends AppCompatActivity {
                         drawer.closeDrawer(GravityCompat.START);
                         break;
                     case R.id.nav_how_update:
-                        intent=new Intent(MainActivity.this, Howtoupdate.class);
+                        intent = new Intent(MainActivity.this, Howtoupdate.class);
                         startActivity(intent);
                         break;
                     case R.id.nav_settings:
-                        intent=new Intent(MainActivity.this, SettingsActivity.class);
+                        intent = new Intent(MainActivity.this, SettingsActivity.class);
                         startActivity(intent);
                         break;
                     case R.id.nav_about:
-                        intent=new Intent(MainActivity.this, AboutActivity.class);
+                        intent = new Intent(MainActivity.this, AboutActivity.class);
                         startActivity(intent);
                         break;
                     case R.id.nav_update:
@@ -375,6 +396,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void tab1Actions() {
         etSearch.setText("");
+        listLastWorkers();
+
 
         etSearch.addTextChangedListener(new TextWatcher() {
             @Override
@@ -577,6 +600,34 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
+
+    public void listLastWorkers() {
+        userContact = dbHelper.ListLast(database);
+        searchFioResult = (ListView) findViewById(R.id.searchFioResult);
+
+        String[] names = new String[userContact.size()];
+        String[] orgs = new String[userContact.size()];
+
+        for (int i = 0; i < userContact.size(); i++) {
+            names[i] = userContact.get(i).getFIO();
+            orgs[i] = userContact.get(i).getSTATUS();
+        }
+
+        WorkersListAdapter adapter1 = new WorkersListAdapter(searchFioResult.getContext(), names, orgs);
+        searchFioResult.setAdapter(adapter1);
+
+        searchFioResult.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(MainActivity.this, ContactDetailActivity.class);
+                intent.putExtra("userid", userContact.get(position).getId());
+                startActivity(intent);
+            }
+        });
+
+    }
+
 
     private void ListFaveList() {
         final String[][] favelist;

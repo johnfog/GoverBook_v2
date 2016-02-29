@@ -3,24 +3,75 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="192dp"
-    android:background="@drawable/nav_header"
-    android:baselineAligned="true">
+    android:baselineAligned="true"
+    android:background="#02a2e8">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"></LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:id="@+id/imageView8"
+            android:src="@drawable/logo_112_circ" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="GoverBook"
+                android:id="@+id/textView4"
+                android:gravity="center_horizontal"
+                android:textColor="#ffffff"
+                android:textSize="40dp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="ver. 1.01"
+            android:id="@+id/textView5"
+            android:layout_marginLeft="230dp"
+            android:textColor="#ffffff"
+            android:textStyle="bold" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:layout_marginTop="160dp">
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="informix@gmail.com"
             android:id="@+id/textView3"
-            android:layout_marginLeft="140dp"
             android:textColor="#ffffff"
             android:textStyle="bold"
-            android:textSize="16dp" />
+            android:textSize="12dp"
+            android:layout_gravity="bottom"
+            android:gravity="right"
+            android:layout_weight="1"
+            android:padding="6dp" />
+
     </LinearLayout>
+
 </LinearLayout>
