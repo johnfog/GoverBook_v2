@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -58,9 +59,9 @@ public class MainActivity extends AppCompatActivity {
     SQLiteDatabase database;
     ArrayList<UserContact> userContact;
     ExpandableListView searchResultOrg;
-    ArrayList<ArrayList<String>> orgNames = new ArrayList<ArrayList<String>>();
+    ArrayList<ArrayList<String>> orgNames = new ArrayList<>();
     ExpListAdapter adapterForOrgs;
-    ArrayList<Integer> orgId = new ArrayList();
+    ArrayList<Integer> orgId = new ArrayList<>();
     ListView searchFioResult;
     private NavigationView navigationView;
     private DrawerLayout drawer;
@@ -69,6 +70,10 @@ public class MainActivity extends AppCompatActivity {
     List<String> areaNames;
     SharedPreferences mSettings;
     private int selectedArea;
+    String tab1text ="";
+    String tab2text ="";
+    String tab1textPrevious = "";
+    String tab2textPrevious = "a";
 
 
     public void onCreate(Bundle savedInstanceState) {
@@ -86,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout_main);
 
-        //Инициилизируем
+        //Инициализируем
         mSettings = PreferenceManager.getDefaultSharedPreferences(this);
 
         initTabs();
@@ -95,34 +100,57 @@ public class MainActivity extends AppCompatActivity {
         initClearButton();
         initSpinner();
 
-        viewPager.setCurrentItem(0);
-        etSearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (!etSearch.getText().toString().equals("")) { //if edittext include text
-                    btnClear.setVisibility(View.VISIBLE);
-                } else { //not include text
-                    btnClear.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() > 2) {
-                    startSearchFio();
-                }
-            }
-        });
-
+        textChangedListener(etSearch);
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
 
+    }
+
+    private void textChangedListener(EditText editText)
+    {
+        editText.addTextChangedListener(new TextWatcher() {
+
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        if (!etSearch.getText().toString().equals("")) { //if edittext include text
+            btnClear.setVisibility(View.VISIBLE);
+        } else { //not include text
+            btnClear.setVisibility(View.GONE);
+        }
+    }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+            if (viewPager.getCurrentItem() == 0) tab1text = etSearch.getText().toString();
+            if (viewPager.getCurrentItem() == 1) tab2text = etSearch.getText().toString();
+
+            if (s.length() > 2) {
+            if (viewPager.getCurrentItem() == 0 && !tab1textPrevious.equals(tab1text))
+            {
+                startSearchFio();
+                tab1textPrevious = tab1text;
+            }
+            if (viewPager.getCurrentItem() == 1 && !tab2textPrevious.equals(tab2text)) {
+                startSearchOrg();
+                tab2textPrevious = tab2text;
+                Log.i("test", "tab2textPrevous = " + tab2textPrevious + "tab2text = " + tab2text);
+            }
+
+        }
+            if (tab1text.equals("") && viewPager.getCurrentItem() == 0 && !tab1textPrevious.equals(tab1text)) tabActions();
+            if (tab2text.equals("") && viewPager.getCurrentItem() == 1 && !tab2textPrevious.equals(tab2text)) tabActions();
+    }
+    });
     }
 
     private void initClearButton() {
@@ -130,6 +158,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 etSearch.setText("");
+                if (viewPager.getCurrentItem() == 0) {
+                    tab1text = "";
+                    etSearch.setText(tab1text);
+                    tabActions();
+                }
+                if (viewPager.getCurrentItem() == 1) {
+                    tab2text = "";
+                    etSearch.setText(tab2text);
+                    tabActions();
+                }
             }
         });
     }
@@ -142,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
         areaNames = Arrays.asList(list[0]);
         areaIds=list[1];
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, areaNames);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, areaNames);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         areaInSetting=mSettings.getString(getResources().getString(R.string.SELECTED_AREA), getString(R.string.default_city_name));
@@ -154,10 +192,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 selectedArea = position;
+                etSearch.setText("");
+                tab1text = "";
+                tab2text = "";
 
                 if (viewPager.getCurrentItem() == 1) {
                     if (areaIds[selectedArea].equals(getString(R.string.default_city_id))) {
                         ListOrgMain(database);
+                        Log.i("test", "Внутри слушателя спиннера");
                     } else
                         displayOrgOnArea();
                 }
@@ -178,7 +220,7 @@ public class MainActivity extends AppCompatActivity {
 
         orgListByType = dbHelper.ListOrgOnType("ALLID", areaIds[selectedArea], database);
 
-        ArrayList<String> orgInArea= new ArrayList<String>();
+        ArrayList<String> orgInArea= new ArrayList<>();
         orgInArea.addAll(Arrays.asList(orgListByType[0]));
 
         adapterForOrgs = new ExpListAdapter(getApplicationContext(),orgInArea,true);
@@ -224,7 +266,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        initSpinner();
+//        initSpinner();
 
 //        if (drawer.isDrawerOpen(GravityCompat.START))
 //            drawer.closeDrawer(GravityCompat.START);
@@ -253,6 +295,7 @@ public class MainActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                hideSoftKeyboard(MainActivity.this);
                 setupMenu();
 
             }
@@ -268,7 +311,8 @@ public class MainActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.nav_last:
                         viewPager.setCurrentItem(0);
-                        tab1Actions();
+                        etSearch.setText("");
+                        tabActions();
                         drawer.closeDrawer(GravityCompat.START);
                         break;
                     case R.id.nav_how_update:
@@ -300,11 +344,13 @@ public class MainActivity extends AppCompatActivity {
     private void initTabs() {
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         TabsAdapter adapter = new TabsAdapter(this, getSupportFragmentManager());
-        viewPager.setOffscreenPageLimit(1);
+        viewPager.setOffscreenPageLimit(2);
         viewPager.setAdapter(adapter);
+        viewPager.setCurrentItem(0);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(viewPager);
+
 
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -312,16 +358,20 @@ public class MainActivity extends AppCompatActivity {
                 switch (tab.getPosition()) {
                     case 0:
                         viewPager.setCurrentItem(0);
-                        tab1Actions();
+                        etSearch.setText(tab1text);
+                        //tabActions();
+                        etSearch.setSelection(etSearch.getText().length());
                         break;
                     case 1:
                         viewPager.setCurrentItem(1);
+                        etSearch.setText(tab2text);
                         if (areaIds[selectedArea].equals(getString(R.string.default_city_id))) {
-                            tab2Actions();
+                            //tabActions();
                         } else {
-                            tab2Actions();
+                            //tabActions();
                             displayOrgOnArea();
                         }
+                        etSearch.setSelection(etSearch.getText().length());
                         break;
                     case 2:
                         viewPager.setCurrentItem(2);
@@ -354,8 +404,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void startSearchOrg() {
         String[][] list;
-        ArrayList<String> orgName = new ArrayList<String>();
-        ArrayList<Integer> orgNameId = new ArrayList<Integer>();
+        ArrayList<String> orgName = new ArrayList<>();
+        ArrayList<Integer> orgNameId = new ArrayList<>();
 
         ExpandableListView listView = (ExpandableListView) findViewById(R.id.searchOrgResult);
         list = dbHelper.SearchOrg(etSearch.getText().toString(),areaIds[selectedArea],database);
@@ -370,7 +420,7 @@ public class MainActivity extends AppCompatActivity {
         listView.setAdapter(adapterForOrgs);
 
 
-        if (listView.getItemAtPosition(0).toString().equals("Ничего не найденно"))
+        if (listView.getItemAtPosition(0).toString().equals("Ничего не найдено"))
         {
             searchResultOrg.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
                 @Override
@@ -394,78 +444,83 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void tab1Actions() {
-        etSearch.setText("");
-        listLastWorkers();
+    private void tabActions() {
 
 
-        etSearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        if (tab1text.equals("") && viewPager.getCurrentItem()== 0){
+            listLastWorkers();
+        }
+        if (tab2text.equals("") && viewPager.getCurrentItem()== 1){
+            ListOrgMain(database);
+        }
 
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (!etSearch.getText().toString().equals("")) { //if edittext include text
-                    btnClear.setVisibility(View.VISIBLE);
-                } else { //not include text
-                    btnClear.setVisibility(View.GONE);
+        if (viewPager.getCurrentItem()== 1) {
+            searchResultOrg.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+                @Override
+                public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                    String clickedOrgName = adapterForOrgs.getChildById(groupPosition, childPosition);
+                    intent = new Intent(MainActivity.this, OrgResultsActivity.class);
+                    intent.putExtra("orgName", clickedOrgName);
+                    startActivity(intent);
+                    return false;
                 }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() > 2) {
-                    startSearchFio();
-                }
-            }
-        });
-
+            });
+        }
     }
 
 
-    private void tab2Actions() {
-        ListOrgMain(database);
-        etSearch.setText("");
-
-        etSearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (!etSearch.getText().toString().equals("")) { //if edittext include text
-                    btnClear.setVisibility(View.VISIBLE);
-                } else { //not include text
-                    btnClear.setVisibility(View.GONE);
-                }
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() > 2) {
-                    startSearchOrg();
-                } else ListOrgMain(database);
-            }
-        });
-
-
-        searchResultOrg.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-            @Override
-            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-                String clickedOrgName = adapterForOrgs.getChildById(groupPosition, childPosition);
-                intent = new Intent(MainActivity.this, OrgResultsActivity.class);
-                intent.putExtra("orgName", clickedOrgName);
-                startActivity(intent);
-                return false;
-            }
-        });
-
-    }
+//    private void tab2Actions() {
+//
+//        //etSearch.setText("");
+//        etSearch.setText(tab2text);
+//        if (tab2text.equals("")){
+//            ListOrgMain(database);
+//        }
+//
+//        etSearch.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//
+//                if (!etSearch.getText().toString().equals("")) { //if edittext include text
+//                    btnClear.setVisibility(View.VISIBLE);
+//                } else { //not include text
+//                    btnClear.setVisibility(View.GONE);
+//                }
+//
+//
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//                tab2text = etSearch.getText().toString();
+//                if (s.length() > 2) {
+//                    startSearchOrg();
+//                }
+//                // else ListOrgMain(database);
+//                Log.i("edittext", "tab1text " + tab1text);
+//                Log.i("edittext", "tab2text " + tab2text);
+//
+//            }
+//        });
+//
+//
+//        searchResultOrg.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+//            @Override
+//            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+//                String clickedOrgName = adapterForOrgs.getChildById(groupPosition, childPosition);
+//                intent = new Intent(MainActivity.this, OrgResultsActivity.class);
+//                intent.putExtra("orgName", clickedOrgName);
+//                startActivity(intent);
+//                return false;
+//            }
+//        });
+//
+//    }
 
     private void tab3Actions() {
         ListFaveList();
@@ -502,10 +557,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void ListOrgMain(SQLiteDatabase database) {
         String[][] list;
-        ArrayList<String> orgTypes = new ArrayList<String>();
-        ArrayList<Integer> orgTypesId = new ArrayList<Integer>();
-        ArrayList<String> orgOnMain = new ArrayList<String>();
-        ArrayList<Integer> orgOnMainId = new ArrayList<Integer>();
+        ArrayList<String> orgTypes = new ArrayList<>();
+        ArrayList<Integer> orgTypesId = new ArrayList<>();
+        ArrayList<String> orgOnMain = new ArrayList<>();
+        ArrayList<Integer> orgOnMainId = new ArrayList<>();
         String[][] orgListByType;
         ArrayList<String> inTypeOrgNames;
 
@@ -531,7 +586,7 @@ public class MainActivity extends AppCompatActivity {
 
         for (int i=0;i< (orgTypesId.size());i++) {
             orgListByType = dbHelper.ListOrgOnType(String.valueOf(orgTypesId.get(i)),"35", database);
-            inTypeOrgNames= new ArrayList<String>();
+            inTypeOrgNames= new ArrayList<>();
 
             for (int k = 0; k < (orgListByType[0].length); k++) {
                 inTypeOrgNames.add(orgListByType[0][k]);
@@ -549,7 +604,7 @@ public class MainActivity extends AppCompatActivity {
         searchResultOrg.setGroupIndicator(getResources().getDrawable(R.drawable.userliststate));
 
 
-        if (searchResultOrg.getItemAtPosition(0).toString().equals("Ничего не найденно"))
+        if (searchResultOrg.getItemAtPosition(0).toString().equals("Ничего не найдено"))
         {
             searchResultOrg.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
                 @Override
@@ -592,14 +647,14 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        int isDbUpdated = 0;
-        if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
-            isDbUpdated = Integer.parseInt(data.getStringExtra("isDbUpdated"));
-        }
-
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        int isDbUpdated = 0;
+//        if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
+//            isDbUpdated = Integer.parseInt(data.getStringExtra("isDbUpdated"));
+//        }
+//
+//    }
 
 
     public void listLastWorkers() {
@@ -631,7 +686,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void ListFaveList() {
         final String[][] favelist;
-        favelist =dbHelper.ListFave(database);
+        favelist = dbHelper.ListFave(database);
 
         ListView listView = (ListView) findViewById(R.id.faveList);
         FaveListAdapter faveListAdapter = new FaveListAdapter(this,favelist[0],favelist[1]);

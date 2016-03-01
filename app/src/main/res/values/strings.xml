@@ -11,7 +11,7 @@
     <string name="search_title">Поиск</string>
     <string name="default_city_id">35</string>
     <string name="default_city_name">г. Якутск</string>
-    <string name="nothing_found">Ничего не найденно</string>
+    <string name="nothing_found">Ничего не найдено</string>
     <string name="title_activity_settings">Settings</string>
     <string name="pref_header_general">Общие</string>
     <string name="pref_title_always_expand">Раскрывать</string>

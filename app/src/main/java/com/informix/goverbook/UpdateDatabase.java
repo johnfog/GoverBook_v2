@@ -3,6 +3,7 @@ package com.informix.goverbook;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -32,6 +33,7 @@ import java.net.URL;
 
 public class UpdateDatabase extends AsyncTask<String, Integer, String> {
 
+    UpdateDatabase updateDatabase = null;
     DBHelper dbHelper;
     String resultJson;
     private ProgressDialog mPDialog;
@@ -41,6 +43,7 @@ public class UpdateDatabase extends AsyncTask<String, Integer, String> {
     final String CacheDir = "/data/data/com.informix.goverbook/cache";
 
     public UpdateDatabase(Context context, File targetFile, String dialogMessage) {
+
         dbHelper= new DBHelper(context);
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         this.mContext = context;
@@ -55,18 +58,16 @@ public class UpdateDatabase extends AsyncTask<String, Integer, String> {
         mPDialog.setMax(100);
         mPDialog.setProgressNumberFormat(null);
 
-        database.delete(DBHelper.TABLE_USERS, null, null);
-        database.delete(DBHelper.TABLE_ORG, null, null);
-        database.delete(DBHelper.TABLE_AREAS, null, null);
-        database.delete(DBHelper.TABLE_OTYPE, null, null);
-        database.delete(DBHelper.TABLE_DEPART, null, null);
-        database.delete(DBHelper.TABLE_ONMAIN, null, null);
-
-        dbHelper.close();
-
     }
 
     protected void onPreExecute() {
+
+        mPDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                cancel(true);
+            }
+        });
         mPDialog.show();
     }
 
@@ -102,7 +103,7 @@ public class UpdateDatabase extends AsyncTask<String, Integer, String> {
             while ((count = input.read(data)) != -1) {
                 // allow canceling with back button
                 if (isCancelled()) {
-                    Log.i("DownloadTask","Cancelled");
+                    Log.i("DownloadTask", "Cancelled");
                     input.close();
                     return null;
                 }
@@ -146,8 +147,12 @@ public class UpdateDatabase extends AsyncTask<String, Integer, String> {
         try {
             dataJsonObj = new JSONObject(resultJson);
 
+
             //Заполняем базу Пользователей s_users
             JSONArray usersArray = dataJsonObj.getJSONArray("users");
+
+            database.delete(DBHelper.TABLE_USERS, null, null);
+
             for (int i = 0; i < usersArray.length(); i++) {
                 JSONObject jsonuser = usersArray.getJSONObject(i);
                 contentValues.put(DBHelper.KEY_ID, jsonuser.getInt("ID"));
@@ -179,6 +184,8 @@ public class UpdateDatabase extends AsyncTask<String, Integer, String> {
         try {
             //Заполняем базу Пользователей s_org
             JSONArray orgsArray = dataJsonObj.getJSONArray("orgs");
+            database.delete(DBHelper.TABLE_ORG, null, null);
+            database.delete(DBHelper.TABLE_ONMAIN, null, null);
 
             // 2. перебираем и выводим контакты каждого
             for (int i = 0; i < orgsArray.length(); i++) {
@@ -227,6 +234,8 @@ public class UpdateDatabase extends AsyncTask<String, Integer, String> {
         try {
             //Заполняем базу Пользователей s_areas
             JSONArray areasArray = dataJsonObj.getJSONArray("areas");
+            database.delete(DBHelper.TABLE_AREAS, null, null);
+
             // 2. перебираем и выводим контакты каждого
             for (int i = 0; i < areasArray.length(); i++) {
                 JSONObject jsonorgs = areasArray.getJSONObject(i);
@@ -257,6 +266,9 @@ public class UpdateDatabase extends AsyncTask<String, Integer, String> {
         try {
             //Заполняем базу Пользователей s_depart
             JSONArray departArray = dataJsonObj.getJSONArray("depart");
+
+            database.delete(DBHelper.TABLE_DEPART, null, null);
+
             // 2. перебираем и выводим контакты каждого
             for (int i = 0; i < departArray.length(); i++) {
                 JSONObject jsonorgs = departArray.getJSONObject(i);
@@ -291,6 +303,8 @@ public class UpdateDatabase extends AsyncTask<String, Integer, String> {
         try {
             //Заполняем базу Пользователей s_otype
             JSONArray otypeArray = dataJsonObj.getJSONArray("otype");
+            database.delete(DBHelper.TABLE_OTYPE, null, null);
+
             // 2. перебираем и выводим контакты каждого
             for (int i = 0; i < otypeArray.length(); i++) {
                 JSONObject jsonorgs = otypeArray.getJSONObject(i);
@@ -331,6 +345,13 @@ public class UpdateDatabase extends AsyncTask<String, Integer, String> {
         mPDialog.setProgress(progress[0]);
 
 
+    }
+
+    @Override
+    protected void onCancelled() {
+        Toast.makeText(mContext, "asynctack cancelled.....", Toast.LENGTH_SHORT).show();
+        mPDialog.dismiss(); /*hide the progressbar dialog here...*/
+        super.onCancelled();
     }
 
     public String getJSON(String urlString) {
