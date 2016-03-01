@@ -6,7 +6,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.TextView;
@@ -21,10 +20,6 @@ public class Howtoupdate extends AppCompatActivity {
         setTheme(R.style.AppDefault);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_howtoupdate);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        initToolbar();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -38,8 +33,8 @@ public class Howtoupdate extends AppCompatActivity {
                                 viewPdf();
                             }
                         });
-                snackbar.setActionTextColor(Color.RED);
 
+                snackbar.setActionTextColor(Color.RED);
                 View sbView = snackbar.getView();
                 TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
                 textView.setTextColor(Color.YELLOW);
@@ -48,10 +43,9 @@ public class Howtoupdate extends AppCompatActivity {
             }
         });
 
+        initToolbar();
 
     }
-
-
 
 
     private void initToolbar() {
@@ -64,6 +58,8 @@ public class Howtoupdate extends AppCompatActivity {
                 onBackPressed();
             }
         });
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
 
     private void viewPdf(){
@@ -72,7 +68,5 @@ public class Howtoupdate extends AppCompatActivity {
         String pdf = "http://rcitsakha.ru/files/docs/tel.pdf";
         webview.loadUrl("http://drive.google.com/viewerng/viewer?embedded=true&url=" + pdf);
         setContentView(webview);
-
-
     }
 }

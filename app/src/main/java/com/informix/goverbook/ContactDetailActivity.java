@@ -18,7 +18,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class  ContactDetailActivity extends AppCompatActivity implements View.OnClickListener{
-    private static final int LAYOUT = R.style.AppDefault;
     private Toolbar toolbar;
     UserContact userContact;
     TextView tvPhone;
@@ -34,10 +33,9 @@ public class  ContactDetailActivity extends AppCompatActivity implements View.On
     @Override
     protected void onCreate(Bundle savedInstanceState){
 
-        setTheme(LAYOUT);
+        setTheme(R.style.AppDefault);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_detail);
-
 
         dbHelper = new DBHelper(this);
         tvPhone = (TextView) findViewById(R.id.tvPhone);
@@ -52,8 +50,6 @@ public class  ContactDetailActivity extends AppCompatActivity implements View.On
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         userContact =dbHelper.searchUserById(intent.getIntExtra("userid", 0), database);
         tvIpPhone.setText(userContact.CONTACTS);
-
-
 
             if (userContact.CONTACTS.equals("-") || userContact.CONTACTS.equals("")) {
                 findViewById(R.id.linearLayoutContacts).setVisibility(View.GONE);
