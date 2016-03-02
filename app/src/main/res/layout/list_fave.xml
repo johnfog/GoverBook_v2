@@ -1,28 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
 
-    <ImageView
-        android:id="@+id/imageFaveType"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="15dp"
-        android:icon="@mipmap/ic_home_modern" />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/faveName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/imageFaveType"
-        android:layout_marginLeft="14dp"
-        android:layout_marginTop="0dp"
-        android:layout_toRightOf="@+id/imageFaveType"
-        android:textColor="@color/colorBlack"
-        android:textSize="@dimen/menu_group_size"
-        android:text="TextView" />
+        <ImageView
+            android:id="@+id/imageFaveType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:icon="@mipmap/ic_home_modern"
+            android:padding="10dp" />
+
+        <TextView
+            android:id="@+id/faveName"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:layout_alignTop="@+id/imageFaveType"
+            android:layout_toRightOf="@+id/imageFaveType"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/menu_group_size"
+            android:text="TextView"
+            android:gravity="left|center"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp" />
+    </LinearLayout>
 
 </RelativeLayout>

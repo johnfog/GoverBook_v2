@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:weightSum="1">
     <LinearLayout
@@ -8,32 +10,76 @@
         android:layout_width="fill_parent"
         android:layout_height="100dp"
         android:id="@+id/linearLayout3"
-        android:layout_marginTop="50dp"
-        android:background="#02a2e8">
+        android:background="@color/colorPrimaryDark"
+        android:layout_marginTop="?attr/actionBarSize">
 
-        <ImageView
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+
+    <ImageView
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
             android:id="@+id/imageView"
-            android:layout_gravity="center_horizontal"
-            android:src="@mipmap/ic_user" />
-    </LinearLayout>
-
-    <FrameLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
+            android:src="@drawable/ic_user1"
+            android:padding="10dp" />
 
         <TextView
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="fill_parent"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:gravity="center_horizontal"
             android:id="@+id/tvDetailFio"
             android:textStyle="bold"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
-            android:textColor="#333333" />
-    </FrameLayout>
+            android:textColor="#FFFFFF"
+            android:gravity="center|center_horizontal" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/linearLayoutOrg"
+        android:padding="10dp">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageView20"
+                android:src="@mipmap/ic_org_grey"
+                android:paddingRight="10dp" />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:id="@+id/tvOrg"
+                    android:textColor="#333333"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/text_detail_1" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Организация"
+                    android:id="@+id/textViewOrg"
+                    android:textSize="14dp" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+
 
 
     <LinearLayout
@@ -52,7 +98,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/imageView2"
-                android:src="@mipmap/detail_job"
+                android:src="@mipmap/ic_user_grey"
                 android:paddingRight="10dp" />
 
             <LinearLayout
@@ -66,7 +112,8 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:id="@+id/tvStatus"
                     android:textColor="#333333"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:textSize="@dimen/text_detail_1" />
 
                 <TextView
                     android:layout_width="fill_parent"
@@ -110,7 +157,8 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:id="@+id/tvIpPhone"
                     android:textStyle="bold"
-                    android:textColor="#333333" />
+                    android:textColor="#333333"
+                    android:textSize="@dimen/text_detail_1" />
 
                 <TextView
                     android:layout_width="fill_parent"
@@ -154,7 +202,8 @@
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:id="@+id/tvEmail"
                     android:textStyle="bold"
-                    android:textColor="#333333" />
+                    android:textColor="#333333"
+                    android:textSize="@dimen/text_detail_1" />
 
                 <TextView
                     android:layout_width="fill_parent"
@@ -206,7 +255,8 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:id="@+id/tvPhone"
                     android:textStyle="bold"
-                    android:textColor="#333333" />
+                    android:textColor="#333333"
+                    android:textSize="@dimen/text_detail_1" />
 
                 <TextView
                     android:layout_width="fill_parent"

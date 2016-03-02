@@ -28,6 +28,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -63,9 +64,12 @@ public class MainActivity extends AppCompatActivity {
     ExpListAdapter adapterForOrgs;
     ArrayList<Integer> orgId = new ArrayList<>();
     ListView searchFioResult;
+    TabLayout tabLayout;
     private NavigationView navigationView;
     private DrawerLayout drawer;
     private Spinner spinner;
+    ImageView emptyImageFave;
+    ImageView emptyImageLast;
     String[] areaIds;
     List<String> areaNames;
     SharedPreferences mSettings;
@@ -90,6 +94,8 @@ public class MainActivity extends AppCompatActivity {
         spinner = (Spinner) findViewById(R.id.areaSpinner);
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout_main);
+        emptyImageFave = (ImageView) findViewById(R.id.empty_image_fave);
+        emptyImageLast = (ImageView) findViewById(R.id.empty_image_last);
 
         //Инициализируем
         mSettings = PreferenceManager.getDefaultSharedPreferences(this);
@@ -100,11 +106,8 @@ public class MainActivity extends AppCompatActivity {
         initClearButton();
         initSpinner();
 
-
         textChangedListener(etSearch);
-
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-
 
     }
 
@@ -143,12 +146,13 @@ public class MainActivity extends AppCompatActivity {
             if (viewPager.getCurrentItem() == 1 && !tab2textPrevious.equals(tab2text)) {
                 startSearchOrg();
                 tab2textPrevious = tab2text;
-                Log.i("test", "tab2textPrevous = " + tab2textPrevious + "tab2text = " + tab2text);
             }
 
         }
             if (tab1text.equals("") && viewPager.getCurrentItem() == 0 && !tab1textPrevious.equals(tab1text)) tabActions();
-            if (tab2text.equals("") && viewPager.getCurrentItem() == 1 && !tab2textPrevious.equals(tab2text)) tabActions();
+            if (tab2text.equals("") && viewPager.getCurrentItem() == 1 && !tab2textPrevious.equals(tab2text))
+            {tabActions();
+                tab2textPrevious = tab2text;}
     }
     });
     }
@@ -199,7 +203,6 @@ public class MainActivity extends AppCompatActivity {
                 if (viewPager.getCurrentItem() == 1) {
                     if (areaIds[selectedArea].equals(getString(R.string.default_city_id))) {
                         ListOrgMain(database);
-                        Log.i("test", "Внутри слушателя спиннера");
                     } else
                         displayOrgOnArea();
                 }
@@ -266,10 +269,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-//        initSpinner();
-
-//        if (drawer.isDrawerOpen(GravityCompat.START))
-//            drawer.closeDrawer(GravityCompat.START);
 
 
         if (viewPager.getCurrentItem()==2)
@@ -348,33 +347,20 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(0);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
+        tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(viewPager);
-
 
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 switch (tab.getPosition()) {
                     case 0:
-                        viewPager.setCurrentItem(0);
-                        etSearch.setText(tab1text);
-                        //tabActions();
-                        etSearch.setSelection(etSearch.getText().length());
+                        tab1Action();
                         break;
                     case 1:
-                        viewPager.setCurrentItem(1);
-                        etSearch.setText(tab2text);
-                        if (areaIds[selectedArea].equals(getString(R.string.default_city_id))) {
-                            //tabActions();
-                        } else {
-                            //tabActions();
-                            displayOrgOnArea();
-                        }
-                        etSearch.setSelection(etSearch.getText().length());
+                        tab2Action();
                         break;
                     case 2:
-                        viewPager.setCurrentItem(2);
                         tab3Actions();
                         break;
 
@@ -393,14 +379,80 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-        tabLayout.getTabAt(0).setIcon(getResources().getDrawable(R.drawable.ic_workers));
-        tabLayout.getTabAt(1).setIcon(getResources().getDrawable(R.drawable.ic_org));
-        tabLayout.getTabAt(2).setIcon(getResources().getDrawable(R.drawable.ic_fave));
-
+        tabLayout.getTabAt(0).setIcon(getResources().getDrawable(R.mipmap.ic_user_group_active));
+        tabLayout.getTabAt(1).setIcon(getResources().getDrawable(R.mipmap.ic_org_inactive));
+        tabLayout.getTabAt(2).setIcon(getResources().getDrawable(R.mipmap.ic_star_inactive));
 
 
     }
+
+
+    private void tabActions() {
+
+
+        if (tab1text.equals("") && viewPager.getCurrentItem()== 0){
+            listLastWorkers();
+        }
+        if (tab2text.equals("") && viewPager.getCurrentItem()== 1){
+            ListOrgMain(database);
+        }
+
+        if (viewPager.getCurrentItem()== 1) {
+            searchResultOrg.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+                @Override
+                public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                    String clickedOrgName = adapterForOrgs.getChildById(groupPosition, childPosition);
+                    intent = new Intent(MainActivity.this, OrgResultsActivity.class);
+                    intent.putExtra("orgName", clickedOrgName);
+                    startActivity(intent);
+                    return false;
+                }
+            });
+        }
+    }
+
+    private void tab1Action() {
+        tabLayout.getTabAt(0).setIcon(getResources().getDrawable(R.mipmap.ic_user_group_active));
+        tabLayout.getTabAt(1).setIcon(getResources().getDrawable(R.mipmap.ic_org_inactive));
+        tabLayout.getTabAt(2).setIcon(getResources().getDrawable(R.mipmap.ic_star_inactive));
+        emptyImageFave.setVisibility(View.GONE);
+
+        viewPager.setCurrentItem(0);
+        etSearch.setText(tab1text);
+        etSearch.setSelection(etSearch.getText().length());
+        tabActions();
+    }
+
+
+    private void tab2Action() {
+
+        tabLayout.getTabAt(0).setIcon(getResources().getDrawable(R.mipmap.ic_user_group_inactive));
+        tabLayout.getTabAt(1).setIcon(getResources().getDrawable(R.mipmap.ic_org_active));
+        tabLayout.getTabAt(2).setIcon(getResources().getDrawable(R.mipmap.ic_star_inactive));
+        emptyImageFave.setVisibility(View.GONE);
+        emptyImageLast.setVisibility(View.GONE);
+
+
+        viewPager.setCurrentItem(1);
+        etSearch.setText(tab2text);
+        if (areaIds[selectedArea].equals(getString(R.string.default_city_id))) {
+        } else {
+            displayOrgOnArea();
+        }
+        etSearch.setSelection(etSearch.getText().length());
+    }
+
+    private void tab3Actions() {
+        tabLayout.getTabAt(0).setIcon(getResources().getDrawable(R.mipmap.ic_user_group_inactive));
+        tabLayout.getTabAt(1).setIcon(getResources().getDrawable(R.mipmap.ic_org_inactive));
+        tabLayout.getTabAt(2).setIcon(getResources().getDrawable(R.mipmap.ic_star_active));
+        emptyImageLast.setVisibility(View.GONE);
+
+        viewPager.setCurrentItem(2);
+        ListFaveList();
+
+    }
+
 
     private void startSearchOrg() {
         String[][] list;
@@ -433,6 +485,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
     private void setupMenu() {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
@@ -440,90 +493,6 @@ public class MainActivity extends AppCompatActivity {
             drawer.openDrawer(GravityCompat.START);
         }
 
-
-    }
-
-
-    private void tabActions() {
-
-
-        if (tab1text.equals("") && viewPager.getCurrentItem()== 0){
-            listLastWorkers();
-        }
-        if (tab2text.equals("") && viewPager.getCurrentItem()== 1){
-            ListOrgMain(database);
-        }
-
-        if (viewPager.getCurrentItem()== 1) {
-            searchResultOrg.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-                @Override
-                public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-                    String clickedOrgName = adapterForOrgs.getChildById(groupPosition, childPosition);
-                    intent = new Intent(MainActivity.this, OrgResultsActivity.class);
-                    intent.putExtra("orgName", clickedOrgName);
-                    startActivity(intent);
-                    return false;
-                }
-            });
-        }
-    }
-
-
-//    private void tab2Actions() {
-//
-//        //etSearch.setText("");
-//        etSearch.setText(tab2text);
-//        if (tab2text.equals("")){
-//            ListOrgMain(database);
-//        }
-//
-//        etSearch.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence s, int start, int before, int count) {
-//
-//                if (!etSearch.getText().toString().equals("")) { //if edittext include text
-//                    btnClear.setVisibility(View.VISIBLE);
-//                } else { //not include text
-//                    btnClear.setVisibility(View.GONE);
-//                }
-//
-//
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable s) {
-//                tab2text = etSearch.getText().toString();
-//                if (s.length() > 2) {
-//                    startSearchOrg();
-//                }
-//                // else ListOrgMain(database);
-//                Log.i("edittext", "tab1text " + tab1text);
-//                Log.i("edittext", "tab2text " + tab2text);
-//
-//            }
-//        });
-//
-//
-//        searchResultOrg.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-//            @Override
-//            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-//                String clickedOrgName = adapterForOrgs.getChildById(groupPosition, childPosition);
-//                intent = new Intent(MainActivity.this, OrgResultsActivity.class);
-//                intent.putExtra("orgName", clickedOrgName);
-//                startActivity(intent);
-//                return false;
-//            }
-//        });
-//
-//    }
-
-    private void tab3Actions() {
-        ListFaveList();
 
     }
 
@@ -660,7 +629,6 @@ public class MainActivity extends AppCompatActivity {
     public void listLastWorkers() {
         userContact = dbHelper.ListLast(database);
         searchFioResult = (ListView) findViewById(R.id.searchFioResult);
-
         String[] names = new String[userContact.size()];
         String[] orgs = new String[userContact.size()];
 
@@ -668,8 +636,8 @@ public class MainActivity extends AppCompatActivity {
             names[i] = userContact.get(i).getFIO();
             orgs[i] = userContact.get(i).getSTATUS();
         }
-
         WorkersListAdapter adapter1 = new WorkersListAdapter(searchFioResult.getContext(), names, orgs);
+        searchFioResult.setEmptyView(findViewById(R.id.empty_image_last));
         searchFioResult.setAdapter(adapter1);
 
         searchFioResult.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -689,17 +657,15 @@ public class MainActivity extends AppCompatActivity {
         favelist = dbHelper.ListFave(database);
 
         ListView listView = (ListView) findViewById(R.id.faveList);
-        FaveListAdapter faveListAdapter = new FaveListAdapter(this,favelist[0],favelist[1]);
+
+
+        FaveListAdapter faveListAdapter= new FaveListAdapter(this,favelist[0],favelist[1]);
         listView.setAdapter(faveListAdapter);
 
-        if (listView.getItemAtPosition(0).toString().equals("Список пуст"))
-        {
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                }
-            });
+        if (favelist[1][0].toString().equals("Список пуст")) {
+            listView.setEmptyView(findViewById(R.id.empty_image_fave));
+            FaveListAdapter adapter= null;
+            listView.setAdapter(adapter);
         }
         else {
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -724,6 +690,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
 
 }
 

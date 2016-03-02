@@ -111,7 +111,7 @@ public class OrgResultsActivity extends AppCompatActivity {
         saved=dbHelper.getItemSaved(clickedOrgName,dbHelper);
 
         if (saved){
-            faveItem.setIcon(R.mipmap.ic_star);
+            faveItem.setIcon(R.mipmap.ic_star_active);
         }
 
         //Обработчик настроек пользователя
@@ -181,7 +181,7 @@ public class OrgResultsActivity extends AppCompatActivity {
             toast = Toast.makeText(getApplicationContext(),
                     "Контакт был добавлен в избранные", Toast.LENGTH_SHORT);
             dbHelper.saveFave(clickedOrgName, DBHelper.TYPE_ORG, 0, dbHelper);
-            faveItem.setIcon(R.mipmap.ic_star);
+            faveItem.setIcon(R.mipmap.ic_star_active);
             saved=true;
 
         }

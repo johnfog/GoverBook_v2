@@ -15,4 +15,5 @@
     <dimen name="text_margin">16dp</dimen>
     <dimen name="padding_menu">10dp</dimen>
     <dimen name="padding_menu_left">10dp</dimen>
+    <dimen name="text_detail_1">16dp</dimen>
 </resources>

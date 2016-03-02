@@ -73,9 +73,11 @@ public class WorkersFragment extends AbstractTabFragment {
             orgs[i]=userContact.get(i).getSTATUS();
         }
 
+
         searchFioResult = (ListView) view.findViewById(R.id.searchFioResult);
         WorkersListAdapter adapter1 = new WorkersListAdapter(searchFioResult.getContext(),names,orgs);
         searchFioResult.setAdapter(adapter1);
+        searchFioResult.setEmptyView(getActivity().findViewById(R.id.empty_image_last));
 
         searchFioResult.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

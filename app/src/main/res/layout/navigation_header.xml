@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="192dp"
     android:baselineAligned="true"
-    android:background="#02a2e8">
+    android:background="@drawable/material">
 
     <LinearLayout
         android:orientation="vertical"
@@ -20,7 +20,7 @@
             android:layout_width="fill_parent"
             android:layout_height="50dp"
             android:id="@+id/imageView8"
-            android:src="@drawable/logo_112_circ" />
+            android:src="@drawable/logo_circ_200" />
 
         <LinearLayout
             android:orientation="horizontal"
@@ -41,25 +41,26 @@
         </LinearLayout>
 
         <TextView
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="ver. 1.01"
             android:id="@+id/textView5"
-            android:layout_marginLeft="230dp"
             android:textColor="#ffffff"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:layout_gravity="right"
+            android:paddingRight="10dp" />
 
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1">
+        android:layout_gravity="right"
+        android:orientation="horizontal">
 
         <TextView
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="informix@gmail.com"
@@ -67,10 +68,10 @@
             android:textColor="#ffffff"
             android:textStyle="bold"
             android:textSize="12dp"
-            android:layout_gravity="bottom"
+            android:layout_gravity="bottom|right"
             android:gravity="right"
-            android:layout_weight="1"
-            android:padding="6dp" />
+            android:paddingRight="10dp"
+            android:paddingBottom="10dp" />
 
     </LinearLayout>
 

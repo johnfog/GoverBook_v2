@@ -10,8 +10,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import com.informix.goverbook.R;
+import com.informix.goverbook.adapters.FaveListAdapter;
 
 public class FaveFragment extends AbstractTabFragment {
     private static final int LAYOUT = R.layout.fragment_fave;

@@ -22,6 +22,7 @@ public class  ContactDetailActivity extends AppCompatActivity implements View.On
     UserContact userContact;
     TextView tvPhone;
     TextView tvEmail;
+    TextView tvOrg;
     Intent intent;
     DBHelper dbHelper;
     boolean saved;
@@ -42,6 +43,7 @@ public class  ContactDetailActivity extends AppCompatActivity implements View.On
         TextView tvStatus = (TextView) findViewById(R.id.tvStatus);
         tvEmail = (TextView) findViewById(R.id.tvEmail);
         tvPhoneDop = (TextView) findViewById(R.id.tvPhoneDop);
+        tvOrg = (TextView) findViewById(R.id.tvOrg);
         TextView tvIpPhone = (TextView) findViewById(R.id.tvIpPhone);
         ImageButton btnDial = (ImageButton) findViewById(R.id.btnDial);
         ImageButton btnEmail = (ImageButton) findViewById(R.id.btnEmail);
@@ -59,6 +61,7 @@ public class  ContactDetailActivity extends AppCompatActivity implements View.On
 
         tvStatus.setText(userContact.getSTATUS());
         tvEmail.setText(userContact.getEMAIL());
+        tvOrg.setText(userContact.getORG());
         String s = userContact.getEMAIL();
         if (s.equals("")){
             findViewById(R.id.linearLayoutEMAIL).setVisibility(View.GONE);
@@ -147,7 +150,7 @@ public class  ContactDetailActivity extends AppCompatActivity implements View.On
         saved=dbHelper.getItemSaved(userContact.FIO,dbHelper);
 
         if (saved){
-            faveItem.setIcon(R.mipmap.ic_star);
+            faveItem.setIcon(R.mipmap.ic_star_active);
         }
         return super.onPrepareOptionsMenu(menu);
     }
@@ -221,7 +224,7 @@ public class  ContactDetailActivity extends AppCompatActivity implements View.On
             toast = Toast.makeText(getApplicationContext(),
                     "Контакт был добавлен в избранные", Toast.LENGTH_SHORT);
             dbHelper.saveFave(userContact.FIO, DBHelper.TYPE_WORKER, userContact.id, dbHelper);
-            faveItem.setIcon(R.mipmap.ic_star);
+            faveItem.setIcon(R.mipmap.ic_star_active);
             saved=true;
 
         }

@@ -6,16 +6,17 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="fill_parent"
-        android:layout_height="80dp"
+        android:layout_height="100dp"
         android:background="#02a2e8"
         android:gravity="left"
         android:weightSum="1">
 
         <ImageView
-            android:layout_width="72dp"
-            android:layout_height="match_parent"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
             android:id="@+id/imageView7"
-            android:src="@mipmap/ic_org2" />
+            android:src="@drawable/ic_org1"
+            android:padding="10dp" />
 
         <TextView
             android:layout_width="fill_parent"

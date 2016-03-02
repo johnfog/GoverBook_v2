@@ -21,7 +21,7 @@
         <android.support.design.widget.TabLayout
             android:id="@+id/tabLayout"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/tabLaout_height"
+            android:layout_height="70dp"
             android:minHeight="40dp"
             app:tabIndicatorColor="@android:color/white"
             app:tabIndicatorHeight="6dp"
@@ -31,6 +31,28 @@
             app:tabTextColor="@android:color/white"/>
 
     </android.support.design.widget.AppBarLayout>
+
+
+    <android.support.v7.widget.AppCompatImageView
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:src="@android:drawable/ic_menu_close_clear_cancel"
+        android:id="@+id/empty_image_fave"
+        android:visibility="gone"
+        android:layout_marginTop="250dp"
+        android:layout_marginLeft="110dp"/>
+
+
+    <android.support.v7.widget.AppCompatImageView
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:src="@android:drawable/ic_delete"
+        android:id="@+id/empty_image_last"
+        android:visibility="gone"
+        android:layout_marginTop="250dp"
+        android:layout_marginLeft="110dp"/>
+
+
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewPager"

@@ -20,7 +20,10 @@
 
 
     <string name="title_activity_about">О программе</string>
-    <string name="reglament">Для внесения сведений или изменения данных опубликованных на сайте http://www.rcitsakha.ru/ вам необходимо позвонить по телефону : 8 (4112) 398-000"
+    <string name="reglament">"Для внесения сведений или изменения данных опубликованных на сайте\n"
+     "http://www.rcitsakha.ru/\n"
+     "Вам необходимо позвонить по телефону\n"
+     "8(4112)398-000"
     </string>
 
     <string name="large_text">
