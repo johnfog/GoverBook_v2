@@ -10,7 +10,7 @@
     <dimen name="menu_child_description_size">12dp</dimen>
     <dimen name="edit_text_size">20dp</dimen>
     <dimen name="app_bar_height">180dp</dimen>
-    <dimen name="tabLaout_height">50dp</dimen>
+    <dimen name="tabLayout_height">50dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="text_margin">16dp</dimen>
     <dimen name="padding_menu">10dp</dimen>

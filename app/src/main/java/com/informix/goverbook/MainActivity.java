@@ -342,13 +342,17 @@ public class MainActivity extends AppCompatActivity {
 
     private void initTabs() {
         viewPager = (ViewPager) findViewById(R.id.viewPager);
-        TabsAdapter adapter = new TabsAdapter(this, getSupportFragmentManager());
+        final TabsAdapter adapter = new TabsAdapter(this, getSupportFragmentManager());
         viewPager.setOffscreenPageLimit(2);
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(0);
 
         tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(viewPager);
+
+        tabLayout.getTabAt(0).setCustomView(adapter.getTabView(0));
+        tabLayout.getTabAt(1).setCustomView(adapter.getTabView(1));
+        tabLayout.getTabAt(2).setCustomView(adapter.getTabView(2));
 
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -379,9 +383,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        tabLayout.getTabAt(0).setIcon(getResources().getDrawable(R.mipmap.ic_user_group_active));
-        tabLayout.getTabAt(1).setIcon(getResources().getDrawable(R.mipmap.ic_org_inactive));
-        tabLayout.getTabAt(2).setIcon(getResources().getDrawable(R.mipmap.ic_star_inactive));
+//        tabLayout.getTabAt(0).setIcon(getResources().getDrawable(R.mipmap.ic_user_group_active));
+//        tabLayout.getTabAt(1).setIcon(getResources().getDrawable(R.mipmap.ic_org_inactive));
+//        tabLayout.getTabAt(2).setIcon(getResources().getDrawable(R.mipmap.ic_star_inactive));
 
 
     }
@@ -412,9 +416,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void tab1Action() {
-        tabLayout.getTabAt(0).setIcon(getResources().getDrawable(R.mipmap.ic_user_group_active));
-        tabLayout.getTabAt(1).setIcon(getResources().getDrawable(R.mipmap.ic_org_inactive));
-        tabLayout.getTabAt(2).setIcon(getResources().getDrawable(R.mipmap.ic_star_inactive));
         emptyImageFave.setVisibility(View.GONE);
 
         viewPager.setCurrentItem(0);
@@ -425,10 +426,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void tab2Action() {
-
-        tabLayout.getTabAt(0).setIcon(getResources().getDrawable(R.mipmap.ic_user_group_inactive));
-        tabLayout.getTabAt(1).setIcon(getResources().getDrawable(R.mipmap.ic_org_active));
-        tabLayout.getTabAt(2).setIcon(getResources().getDrawable(R.mipmap.ic_star_inactive));
         emptyImageFave.setVisibility(View.GONE);
         emptyImageLast.setVisibility(View.GONE);
 
@@ -443,9 +440,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void tab3Actions() {
-        tabLayout.getTabAt(0).setIcon(getResources().getDrawable(R.mipmap.ic_user_group_inactive));
-        tabLayout.getTabAt(1).setIcon(getResources().getDrawable(R.mipmap.ic_org_inactive));
-        tabLayout.getTabAt(2).setIcon(getResources().getDrawable(R.mipmap.ic_star_active));
         emptyImageLast.setVisibility(View.GONE);
 
         viewPager.setCurrentItem(2);
