@@ -20,7 +20,6 @@
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tabLayout"
-            style="@style/MyCustomTabLayout"
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:minHeight="40dp"
@@ -34,24 +33,26 @@
     </android.support.design.widget.AppBarLayout>
 
 
-    <android.support.v7.widget.AppCompatImageView
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:src="@android:drawable/ic_menu_close_clear_cancel"
-        android:id="@+id/empty_image_fave"
+    <android.support.v7.widget.AppCompatTextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="Список пуст"
+        android:textSize="20dp"
+        android:id="@+id/empty_text_fave"
         android:visibility="gone"
-        android:layout_marginTop="250dp"
-        android:layout_marginLeft="110dp"/>
+        />
 
 
-    <android.support.v7.widget.AppCompatImageView
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:src="@android:drawable/ic_delete"
-        android:id="@+id/empty_image_last"
-        android:visibility="gone"
-        android:layout_marginTop="250dp"
-        android:layout_marginLeft="110dp"/>
+        <android.support.v7.widget.AppCompatTextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="Список пуст"
+            android:textSize="20dp"
+            android:id="@+id/empty_text_last"
+            android:visibility="gone"
+            />
 
 
 

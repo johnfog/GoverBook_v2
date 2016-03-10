@@ -19,6 +19,8 @@ import java.util.ArrayList;
  * Created by adm on 28.01.2016.
  */
 public class DBHelper extends SQLiteOpenHelper {
+
+    private static DBHelper sInstance;
     // Объявляем Таблицы базы
     private static final int DATABASE_VERSION = 8;
     public static final String DATABASE_NAME = "contactDb";
@@ -84,6 +86,17 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
 
+    //Синглтон БД. Всегда возвращает единственный элемент базы
+    public static synchronized DBHelper getInstance(Context context) {
+
+        // Use the application context, which will ensure that you
+        // don't accidentally leak an Activity's context.
+        // See this article for more information: http://bit.ly/6LRzfx
+        if (sInstance == null) {
+            sInstance = new DBHelper(context.getApplicationContext());
+        }
+        return sInstance;
+    }
 
 
     public DBHelper (Context context){
@@ -373,8 +386,10 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
 
-    public String[][] ListOrgType(SQLiteDatabase database) {
+    public String[][] ListOrgType(Context context) {
 
+        DBHelper dbHelper = DBHelper.getInstance(context);
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
         String querry;
         String[][] result;
         // Строка запроса в sql для ФИО
@@ -409,8 +424,10 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
 
-    public String[][] ListOrgOnMain(SQLiteDatabase database) {
+    public String[][] ListOrgOnMain(Context context) {
 
+        DBHelper dbHelper = DBHelper.getInstance(context);
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
         String querry;
         String[][] result;
         // Строка запроса в sql для ФИО
@@ -500,7 +517,10 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
 
-    public String[][] ListFave(SQLiteDatabase database){
+    public static String[][] ListFave(Context context){
+
+        DBHelper dbHelper = DBHelper.getInstance(context);
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
         String querry;
         String[][] result;
 
@@ -542,7 +562,9 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
 
-    public ArrayList<UserContact> ListLast(SQLiteDatabase database) {
+    public ArrayList<UserContact> ListLast(Context context) {
+        DBHelper dbHelper = DBHelper.getInstance(context);
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
 
         String querry;
         ArrayList<UserContact> result = new ArrayList<UserContact>();
@@ -582,8 +604,10 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
 
-    public String[][] ListOrgOnType(String typeId, String area, SQLiteDatabase database) {
+    public String[][] ListOrgOnType(String typeId, String area, Context context) {
 
+        DBHelper dbHelper = DBHelper.getInstance(context);
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
         String querry;
         String[][] result;
         // Строка запроса в sql для ФИО

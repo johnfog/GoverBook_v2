@@ -14,8 +14,9 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:icon="@mipmap/ic_home_modern"
-            android:padding="10dp" />
+            android:icon="@mipmap/ic_org_grey"
+            android:padding="10dp"
+            android:src="@mipmap/ic_org_grey" />
 
         <TextView
             android:id="@+id/faveName"

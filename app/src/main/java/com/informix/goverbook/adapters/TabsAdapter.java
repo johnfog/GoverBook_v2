@@ -50,7 +50,7 @@ public class TabsAdapter extends FragmentPagerAdapter {
 
     public View getTabView(int position) {
         // Given you have a custom layout in `res/layout/custom_tab.xml` with a TextView and ImageView
-        View v = LayoutInflater.from(context).inflate(R.layout.tab_custom, null);
+        View v = LayoutInflater.from(context).inflate(R.layout.custom_tab, null);
         ImageView img = (ImageView) v.findViewById(R.id.tabIcon);
         img.setImageResource(imageResId[position]);
         return v;

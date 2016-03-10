@@ -8,13 +8,11 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 
 import com.informix.goverbook.ContactDetailActivity;
 import com.informix.goverbook.DBHelper;
@@ -23,9 +21,6 @@ import com.informix.goverbook.UserContact;
 import com.informix.goverbook.adapters.WorkersListAdapter;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class WorkersFragment extends AbstractTabFragment {
     private static final int LAYOUT = R.layout.fragment_workers;
@@ -48,7 +43,7 @@ public class WorkersFragment extends AbstractTabFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(LAYOUT, container, false);
-        dbHelper = new DBHelper(context);
+        dbHelper = DBHelper.getInstance(context);
 
         database = dbHelper.getReadableDatabase();
 
@@ -62,7 +57,7 @@ public class WorkersFragment extends AbstractTabFragment {
     }
 
     public void listLastWorkers(){
-        userContact = dbHelper.ListLast(database);
+        userContact = dbHelper.ListLast(super.context);
 
 
         String[] names=new String[userContact.size()];
@@ -77,7 +72,7 @@ public class WorkersFragment extends AbstractTabFragment {
         searchFioResult = (ListView) view.findViewById(R.id.searchFioResult);
         WorkersListAdapter adapter1 = new WorkersListAdapter(searchFioResult.getContext(),names,orgs);
         searchFioResult.setAdapter(adapter1);
-        searchFioResult.setEmptyView(getActivity().findViewById(R.id.empty_image_last));
+        searchFioResult.setEmptyView(getActivity().findViewById(R.id.empty_text_last));
 
         searchFioResult.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

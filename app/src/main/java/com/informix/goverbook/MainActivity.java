@@ -1,7 +1,7 @@
 package com.informix.goverbook;
 
-
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
@@ -12,11 +12,11 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -68,8 +68,8 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView navigationView;
     private DrawerLayout drawer;
     private Spinner spinner;
-    ImageView emptyImageFave;
-    ImageView emptyImageLast;
+    TextView emptyTextFave;
+    TextView emptyTextLast;
     String[] areaIds;
     List<String> areaNames;
     SharedPreferences mSettings;
@@ -77,7 +77,9 @@ public class MainActivity extends AppCompatActivity {
     String tab1text ="";
     String tab2text ="";
     String tab1textPrevious = "";
-    String tab2textPrevious = "a";
+    String tab2textPrevious = "just for not equal to previous on create activity";
+
+    AlertDialog alertDialog;
 
 
     public void onCreate(Bundle savedInstanceState) {
@@ -87,18 +89,19 @@ public class MainActivity extends AppCompatActivity {
         initDb();
 
         //Находим элементы
-        dbHelper = new DBHelper(this);
+        dbHelper = DBHelper.getInstance(this);
         database = dbHelper.getReadableDatabase();
         etSearch = (EditText) findViewById(R.id.searchString);
         btnClear = (Button) findViewById(R.id.btn_clear);
         spinner = (Spinner) findViewById(R.id.areaSpinner);
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout_main);
-        emptyImageFave = (ImageView) findViewById(R.id.empty_image_fave);
-        emptyImageLast = (ImageView) findViewById(R.id.empty_image_last);
+        emptyTextFave = (TextView) findViewById(R.id.empty_text_fave);
+        emptyTextLast = (TextView) findViewById(R.id.empty_text_last);
 
         //Инициализируем
         mSettings = PreferenceManager.getDefaultSharedPreferences(this);
+        alertDialog = alertDialogBuilder().create();
 
         initTabs();
         initNavigationView();
@@ -221,7 +224,7 @@ public class MainActivity extends AppCompatActivity {
 
         String[][] orgListByType;
 
-        orgListByType = dbHelper.ListOrgOnType("ALLID", areaIds[selectedArea], database);
+        orgListByType = dbHelper.ListOrgOnType("ALLID", areaIds[selectedArea], this);
 
         ArrayList<String> orgInArea= new ArrayList<>();
         orgInArea.addAll(Arrays.asList(orgListByType[0]));
@@ -327,8 +330,9 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(intent);
                         break;
                     case R.id.nav_update:
-                        File mTargetFile = new File("/data/data/com.informix.goverbook/cache" + "/base.zip");
-                        new UpdateDatabase(MainActivity.this, mTargetFile, "Качаю").execute("http://www.rcitsakha.ru/rcit/zz/base.zip");
+                        alertDialog.show();
+//                        File mTargetFile = new File("/data/data/com.informix.goverbook/cache" + "/base.zip");
+//                        new UpdateDatabase(MainActivity.this, mTargetFile, "Качаю").execute("http://www.rcitsakha.ru/rcit/zz/base.zip");
                         break;
                 }
 
@@ -416,7 +420,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void tab1Action() {
-        emptyImageFave.setVisibility(View.GONE);
+        emptyTextFave.setVisibility(View.GONE);
 
         viewPager.setCurrentItem(0);
         etSearch.setText(tab1text);
@@ -426,8 +430,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void tab2Action() {
-        emptyImageFave.setVisibility(View.GONE);
-        emptyImageLast.setVisibility(View.GONE);
+        emptyTextFave.setVisibility(View.GONE);
+        emptyTextLast.setVisibility(View.GONE);
 
 
         viewPager.setCurrentItem(1);
@@ -440,7 +444,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void tab3Actions() {
-        emptyImageLast.setVisibility(View.GONE);
+        emptyTextLast.setVisibility(View.GONE);
 
         viewPager.setCurrentItem(2);
         ListFaveList();
@@ -530,7 +534,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Добавляем Организации для главной страницы
 
-        list = dbHelper.ListOrgOnMain(database);
+        list = dbHelper.ListOrgOnMain(this);
         for (int i = 0; i < (list[0].length); i++) {
             orgOnMain.add(list[0][i]);
             orgOnMainId.add(Integer.parseInt(list[1][i]));
@@ -541,14 +545,14 @@ public class MainActivity extends AppCompatActivity {
 
         // Добавляем Типы организаций
 
-        list = dbHelper.ListOrgType(database);
+        list = dbHelper.ListOrgType(this);
         for (int i = 0; i < (list[0].length); i++) {
             orgTypes.add(list[0][i]);
             orgTypesId.add(Integer.parseInt(list[1][i]));
         }
 
         for (int i=0;i< (orgTypesId.size());i++) {
-            orgListByType = dbHelper.ListOrgOnType(String.valueOf(orgTypesId.get(i)),"35", database);
+            orgListByType = dbHelper.ListOrgOnType(String.valueOf(orgTypesId.get(i)),"35", this);
             inTypeOrgNames= new ArrayList<>();
 
             for (int k = 0; k < (orgListByType[0].length); k++) {
@@ -621,7 +625,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void listLastWorkers() {
-        userContact = dbHelper.ListLast(database);
+        userContact = dbHelper.ListLast(this);
         searchFioResult = (ListView) findViewById(R.id.searchFioResult);
         String[] names = new String[userContact.size()];
         String[] orgs = new String[userContact.size()];
@@ -631,7 +635,7 @@ public class MainActivity extends AppCompatActivity {
             orgs[i] = userContact.get(i).getSTATUS();
         }
         WorkersListAdapter adapter1 = new WorkersListAdapter(searchFioResult.getContext(), names, orgs);
-        searchFioResult.setEmptyView(findViewById(R.id.empty_image_last));
+        searchFioResult.setEmptyView(findViewById(R.id.empty_text_last));
         searchFioResult.setAdapter(adapter1);
 
         searchFioResult.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -645,10 +649,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
     private void ListFaveList() {
         final String[][] favelist;
-        favelist = dbHelper.ListFave(database);
+        favelist = dbHelper.ListFave(this);
 
         ListView listView = (ListView) findViewById(R.id.faveList);
 
@@ -657,7 +660,7 @@ public class MainActivity extends AppCompatActivity {
         listView.setAdapter(faveListAdapter);
 
         if (favelist[1][0].toString().equals("Список пуст")) {
-            listView.setEmptyView(findViewById(R.id.empty_image_fave));
+            listView.setEmptyView(findViewById(R.id.empty_text_fave));
             FaveListAdapter adapter= null;
             listView.setAdapter(adapter);
         }
@@ -684,6 +687,33 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
+    private AlertDialog.Builder alertDialogBuilder() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Вы уверены, что хотите обновить базу пользователей?");
+        builder.setCancelable(true);
+
+        builder.setNegativeButton(
+                "Нет",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+
+        builder.setPositiveButton(
+                "Да",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                        File mTargetFile = new File("/data/data/com.informix.goverbook/cache" + "/base.zip");
+                        new UpdateDatabase(MainActivity.this, mTargetFile, "Качаю").execute("http://www.rcitsakha.ru/rcit/zz/base.zip");
+                    }
+                });
+
+
+        return builder;
+    };
 
 
 }

@@ -38,7 +38,7 @@ public class  ContactDetailActivity extends AppCompatActivity implements View.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_detail);
 
-        dbHelper = new DBHelper(this);
+        dbHelper = DBHelper.getInstance(this);
         tvPhone = (TextView) findViewById(R.id.tvPhone);
         TextView tvStatus = (TextView) findViewById(R.id.tvStatus);
         tvEmail = (TextView) findViewById(R.id.tvEmail);
@@ -47,7 +47,6 @@ public class  ContactDetailActivity extends AppCompatActivity implements View.On
         TextView tvIpPhone = (TextView) findViewById(R.id.tvIpPhone);
         ImageButton btnDial = (ImageButton) findViewById(R.id.btnDial);
         ImageButton btnEmail = (ImageButton) findViewById(R.id.btnEmail);
-        DBHelper dbHelper =new DBHelper(this);
         intent=getIntent();
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         userContact =dbHelper.searchUserById(intent.getIntExtra("userid", 0), database);

@@ -46,7 +46,7 @@ public class OrgResultsActivity extends AppCompatActivity {
         mSettings = PreferenceManager.getDefaultSharedPreferences(this);
         expanded=mSettings.getBoolean("always_expand",false);
 
-        dbHelper = new DBHelper(this);
+        dbHelper = DBHelper.getInstance(this);
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         searchResult = (ExpandableListView) findViewById(R.id.orgResultList);
         TextView orgName = (TextView) findViewById(R.id.tvOrgName);

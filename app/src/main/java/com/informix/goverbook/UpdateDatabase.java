@@ -44,7 +44,7 @@ public class UpdateDatabase extends AsyncTask<String, Integer, String> {
 
     public UpdateDatabase(Context context, File targetFile, String dialogMessage) {
 
-        dbHelper= new DBHelper(context);
+        dbHelper= DBHelper.getInstance(context);
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         this.mContext = context;
         this.mTargetFile = targetFile;
@@ -349,7 +349,7 @@ public class UpdateDatabase extends AsyncTask<String, Integer, String> {
 
     @Override
     protected void onCancelled() {
-        Toast.makeText(mContext, "asynctack cancelled.....", Toast.LENGTH_SHORT).show();
+        Toast.makeText(mContext, "Обновление отменено", Toast.LENGTH_SHORT).show();
         mPDialog.dismiss(); /*hide the progressbar dialog here...*/
         super.onCancelled();
     }
