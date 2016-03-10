@@ -167,6 +167,7 @@ public class  ContactDetailActivity extends AppCompatActivity implements View.On
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_back));
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
